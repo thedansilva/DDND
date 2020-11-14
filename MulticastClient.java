@@ -38,11 +38,26 @@ public class MulticastClient implements Runnable {
         thread1.start();
         String username;
         try {
-            Scanner in = new Scanner(System.in);
-            System.out.println("Enter your username:"); //get username from client
-            username = in.nextLine() +";";
 
+            while(true) {
+                Scanner in = new Scanner(System.in);
+                System.out.println("Enter your username:"); //get username from client and send to server
+                username = in.nextLine() +";";
+                String str = "username;"+username;
+                byte[] cli = new byte[256];
+                cli = str.getBytes();
+                packet = new DatagramPacket(cli, cli.length, address, 4445);
+                socket.send(packet);
+            }
+            /*Scanner in = new Scanner(System.in);
+            System.out.println("Enter your username:"); //get username from client and send to server
+            username = in.nextLine() +";";
+            String str = "username;"+username;
             byte[] cli = new byte[256];
+            cli = str.getBytes();
+            packet = new DatagramPacket(cli, cli.length, address, 4445);
+            socket.send(packet);
+
             String test;
             while(true) {
                 System.out.println("Enter thing: ");
@@ -51,7 +66,7 @@ public class MulticastClient implements Runnable {
                 packet = new DatagramPacket(cli, cli.length, address, 4445);
                 socket.send(packet);
                 test = "";
-            }
+            }*/
         } catch (IOException e) {
             e.printStackTrace();
         }
