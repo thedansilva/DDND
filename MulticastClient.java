@@ -4,9 +4,9 @@ import java.util.*;
 
 public class MulticastClient implements Runnable {
     static MulticastSocket socket;
-    final String command = "command;";
-    final String info = "info;";
-    final String echo = "echo;";
+    final static String command = "command;";
+    final static String info = "info;";
+    final static String echo = "echo;";
     //String username;
 
     public void run() {
@@ -39,7 +39,7 @@ public class MulticastClient implements Runnable {
         String username;
         try {
 
-            while(true) {
+            /*while(true) { //loop for username checking (max 5)
                 Scanner in = new Scanner(System.in);
                 System.out.println("Enter your username:"); //get username from client and send to server
                 username = in.nextLine() +";";
@@ -48,8 +48,9 @@ public class MulticastClient implements Runnable {
                 cli = str.getBytes();
                 packet = new DatagramPacket(cli, cli.length, address, 4445);
                 socket.send(packet);
-            }
-            /*Scanner in = new Scanner(System.in);
+            }*/
+
+            Scanner in = new Scanner(System.in);
             System.out.println("Enter your username:"); //get username from client and send to server
             username = in.nextLine() +";";
             String str = "username;"+username;
@@ -57,16 +58,32 @@ public class MulticastClient implements Runnable {
             cli = str.getBytes();
             packet = new DatagramPacket(cli, cli.length, address, 4445);
             socket.send(packet);
+            
+            while(true) { //main input loop
+                cli = new byte[256];
+                String test = "";
+                System.out.println("Enter a number for the corresponding option: 1-info / 2-command / 3-echo");
+                String choice = in.nextLine();
+                if (choice.equals("1")) {
+                    
+                } else if (choice.equals("2")) {
 
-            String test;
-            while(true) {
-                System.out.println("Enter thing: ");
-                test = username+in.nextLine();
+                } else if (choice.equals("3")) {
+                    //System.out.println("Enter echo text.");
+                    test = echo+"echotext";
+                    cli = test.getBytes();
+                    packet = new DatagramPacket(cli, cli.length, address, 4445);
+                    socket.send(packet);
+                } else {
+                    System.out.println("Sorry, "+choice+" is not a valid option.");
+                }
+
+                /*test = username+in.nextLine();
                 cli = test.getBytes();
                 packet = new DatagramPacket(cli, cli.length, address, 4445);
                 socket.send(packet);
-                test = "";
-            }*/
+                test = "";*/
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
