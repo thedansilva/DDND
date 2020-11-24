@@ -1,3 +1,5 @@
+package com.mycompany.ddnd;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -8,7 +10,13 @@ public class MulticastClient implements Runnable {
     final static String info = "info;";
     final static String echo = "echo;";
     //String username;
+    //NewJFrame njframe;
 
+    /*public MulticastClient(NewJFrame frame) {
+        
+        
+    } */
+    
     public void run() {
         try{
             System.out.println("Thread running.");
@@ -19,9 +27,13 @@ public class MulticastClient implements Runnable {
                     socket.joinGroup(address);
                     byte[] buf = new byte[256];
                     multiPacket = new DatagramPacket(buf, buf.length);
-                    System.out.println("Waiting for packet.");
+                    System.out.println("Waiting for packet (thread).");
                     socket.receive(multiPacket);
+                    System.out.println("Received packet (thread).");
                     String received = new String(multiPacket.getData(), 0, multiPacket.getLength());
+                    //send received packet string to jframe
+                    //NewJFrame frame = new NewJFrame();
+                    //frame.outputLogListener(received);
                     System.out.println("BROADCAST: " + received);
             }
         } catch (IOException e) {
@@ -32,24 +44,12 @@ public class MulticastClient implements Runnable {
         DatagramPacket packet;
         InetAddress address = InetAddress.getByName("230.0.0.1");
         socket = new MulticastSocket(4446);
-	    socket.joinGroup(address);
+	socket.joinGroup(address);
         MulticastClient listener = new MulticastClient();
         Thread thread1 = new Thread(listener);
         thread1.start();
         String username;
         try {
-
-            /*while(true) { //loop for username checking (max 5)
-                Scanner in = new Scanner(System.in);
-                System.out.println("Enter your username:"); //get username from client and send to server
-                username = in.nextLine() +";";
-                String str = "username;"+username;
-                byte[] cli = new byte[256];
-                cli = str.getBytes();
-                packet = new DatagramPacket(cli, cli.length, address, 4445);
-                socket.send(packet);
-            }*/
-
             Scanner in = new Scanner(System.in);
             System.out.println("Enter your username:"); //get username from client and send to server
             username = in.nextLine() +";";
@@ -69,7 +69,6 @@ public class MulticastClient implements Runnable {
                 } else if (choice.equals("2")) {
 
                 } else if (choice.equals("3")) {
-                    //System.out.println("Enter echo text.");
                     test = echo+"echotext";
                     cli = test.getBytes();
                     packet = new DatagramPacket(cli, cli.length, address, 4445);
