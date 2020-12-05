@@ -13,7 +13,9 @@ public class Map {
     String mapData[][]; // is a combination of the map data and the character's positions
     int CharacterData[]; // holds the x and y coordinates of the character.
     String mapLayout[][]; // comes from the map file given
-    
+    // arraylist x -> x[3]
+    // arraylist y    y[3] 
+    // arraylist username  u[3]
     public Map() {
         this.mapData = new String [9][20];
         this.mapLayout = new String [9][20];

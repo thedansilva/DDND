@@ -9,7 +9,7 @@ public class MulticastServerThread extends Thread {
     BufferedReader in = null;
     InetAddress group;
     int type;
-    ArrayList<Character> players;
+    ArrayList<Character> playersArray;
     
     public MulticastServerThread(int type) throws IOException {
         super("MulticastServerThread");
@@ -20,7 +20,7 @@ public class MulticastServerThread extends Thread {
     }
     public void run() {
         Map map = new Map();
-        players = new ArrayList<Character>();
+        playersArray = new ArrayList<Character>();
         
         if(type == 1) {
             try{new MulticastServerThread(2).start();}catch(IOException e){};
@@ -50,6 +50,8 @@ public class MulticastServerThread extends Thread {
                             players[playerCount] = str[1];
                             System.out.println("Player "+(playerCount+1)+": "+players[playerCount]+" joined.");
                             playerCount++;
+                            char icon = str[1].charAt(0);
+                            playersArray.add(new Character(14, 14, 14, 14, 14, 14, 20, 3, 3, str[1], icon));
                         }
                         map.generateMap();
                         pkt = buildPacket(map.returnMap());
