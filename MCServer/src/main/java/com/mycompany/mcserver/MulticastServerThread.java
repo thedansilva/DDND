@@ -53,6 +53,7 @@ public class MulticastServerThread extends Thread {
                             playerCount++;
                             char icon = str[1].charAt(0);
                             map.addCharacter(new Character(14, 14, 14, 14, 14, 14, 20, 3, 3, str[1], icon));
+                            playersArray = map.getPlayers();
                         }
                         map.generateMap();
                         pkt = buildPacket(map.returnMap());

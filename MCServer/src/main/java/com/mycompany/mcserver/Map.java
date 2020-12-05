@@ -77,6 +77,10 @@ public class Map {
                     System.out.println(characters.get(z).getUsername() + " " + getCoords(characters.get(z).getUsername()));
                 }
     }
+    
+    public ArrayList<Character> getPlayers() {
+        return characters;
+    }
         
     // takes 4 arguments: 0 (up), 1 (left), 2 (down), and 3 (right). Checks to see if the next spot is a . or not.
     // try is used in case the area checked is out of the array, which means it is definitely not traversable.
