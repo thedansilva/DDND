@@ -22,7 +22,7 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
     static DatagramPacket sendPacket;
     static DatagramPacket recvPacket;
     public int playerID = 0;
-    
+    String username;
     // USED FOR PARSING DATA FROM SERVER
         public void run() {
         try{
@@ -173,16 +173,16 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
         try {
             switch(evt.getKeyCode()) {
                    case KeyEvent.VK_UP:
-                       sendString("command;up");
+                       sendString("command;" + username + ";up");
                        break;
                    case KeyEvent.VK_DOWN:
-                       sendString("command;down");
+                       sendString("command;" + username + ";down");
                        break;
                    case KeyEvent.VK_LEFT:
-                       sendString("command;left");
+                       sendString("command;" + username + ";left");
                        break;
                    case KeyEvent.VK_RIGHT:
-                       sendString("command;right");
+                       sendString("command;" + username + ";right");
                        break;
             }
         } catch (IOException e) {
@@ -205,9 +205,9 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
         try {
             switch(evt.getKeyCode()) {
                    case KeyEvent.VK_ENTER:
-                       String request = logArea.getText().replaceAll("\n", "");
-                       String username = request + ";";
-                       String str = "username;"+username.replaceAll(" ", ";");
+                       username = logArea.getText().replaceAll("\n", "");
+                       String append = username + ";";
+                       String str = "username;"+append.replaceAll(" ", ";");
                        try {
                            address = InetAddress.getByName("230.0.0.1");
                            socket = new MulticastSocket(4446);

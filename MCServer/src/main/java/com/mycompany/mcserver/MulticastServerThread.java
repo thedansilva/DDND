@@ -35,6 +35,7 @@ public class MulticastServerThread extends Thread {
                     packet = new DatagramPacket(empty, empty.length);
                     System.out.println("waiting");
                     socket.receive(packet);
+                    map.printPlayers();
                     String received = new String(packet.getData(), 0, packet.getLength());
                     System.out.println("Received: "+received);
                     str = received.split(";");
@@ -51,7 +52,7 @@ public class MulticastServerThread extends Thread {
                             System.out.println("Player "+(playerCount+1)+": "+players[playerCount]+" joined.");
                             playerCount++;
                             char icon = str[1].charAt(0);
-                            playersArray.add(new Character(14, 14, 14, 14, 14, 14, 20, 3, 3, str[1], icon));
+                            map.addCharacter(new Character(14, 14, 14, 14, 14, 14, 20, 3, 3, str[1], icon));
                         }
                         map.generateMap();
                         pkt = buildPacket(map.returnMap());
@@ -60,21 +61,21 @@ public class MulticastServerThread extends Thread {
 
                     } else if (str[0].equals("command")) {
                         System.out.println("Got command.");
-                        switch(str[1]) {
+                        switch(str[2]) {
                             case "up":
-                                map.moveCharacter(0);
+                                map.moveCharacter(str[1], 0);
                                 break;
                             case "left":
-                                map.moveCharacter(1);
+                                map.moveCharacter(str[1], 1);
                                 break;
                             case "down":
-                                map.moveCharacter(2);
+                                map.moveCharacter(str[1], 2);
                                 break;
                             case "right":
-                                map.moveCharacter(3);
+                                map.moveCharacter(str[1], 3);
                                 break;
                         }
-                        System.out.println("The user is at " + map.getCoords());
+                        System.out.println(map.getCoords(str[1]));
                         map.generateMap();
                         pkt = buildPacket(map.returnMap());
                         socket.send(pkt);

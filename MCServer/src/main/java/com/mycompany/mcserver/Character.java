@@ -52,7 +52,7 @@ public class Character {
     }
     
     public int getY() {
-        return this.x;
+        return this.y;
     }
     
     public void setY(int newY) {
