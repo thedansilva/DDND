@@ -207,7 +207,7 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                    case KeyEvent.VK_ENTER:
                        String request = logArea.getText().replaceAll("\n", "");
                        String username = request + ";";
-                       String str = "username;"+username;
+                       String str = "username;"+username.replaceAll(" ", ";");
                        try {
                            address = InetAddress.getByName("230.0.0.1");
                            socket = new MulticastSocket(4446);
@@ -290,7 +290,7 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                 /*NewJFrame*/ clientFrame = new NewJFrame();
                 clientFrame.setLocationRelativeTo(null);
                 clientFrame.setVisible(true);
-                clientFrame.statsArea.setText("Welcome to DDND!\nPlease enter your username in the log area (bottom-most section) and press ENTER to submit.");
+                clientFrame.statsArea.setText("Welcome to DDND!\nPlease enter your username in the log area (bottom-most section) and your stats separated by spaces:\nSTRENGTH\nDEXTERITY\nCONSTITUTION\nINTELLIGENCE\nWISDOM\nCHARISMA\nHEALTH\nSubmit with the ENTER key afterwards.");
             //socket.leaveGroup(address);
             //socket.close(); 
             }

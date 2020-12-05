@@ -9,6 +9,8 @@ public class MulticastServerThread extends Thread {
     BufferedReader in = null;
     InetAddress group;
     int type;
+    ArrayList<Character> players;
+    
     public MulticastServerThread(int type) throws IOException {
         super("MulticastServerThread");
         this.type = type;
@@ -18,8 +20,9 @@ public class MulticastServerThread extends Thread {
     }
     public void run() {
         Map map = new Map();
+        players = new ArrayList<Character>();
+        
         if(type == 1) {
-            //new MulticastServerThread(2).start();
             try{new MulticastServerThread(2).start();}catch(IOException e){};
             DatagramPacket packet, pkt;
             String[] players = new String[5];
@@ -69,7 +72,7 @@ public class MulticastServerThread extends Thread {
                                 map.moveCharacter(3);
                                 break;
                         }
-                        System.out.println(map.getCoords());
+                        System.out.println("The user is at " + map.getCoords());
                         map.generateMap();
                         pkt = buildPacket(map.returnMap());
                         socket.send(pkt);
