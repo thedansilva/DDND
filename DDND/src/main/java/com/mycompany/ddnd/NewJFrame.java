@@ -21,8 +21,10 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
     static InetAddress address;
     static DatagramPacket sendPacket;
     static DatagramPacket recvPacket;
-    public int playerID = 0;
-    
+    String username = "";
+    String usernameRequest = "";
+    boolean loggedIn = false;
+    boolean unregistered = true;
     // USED FOR PARSING DATA FROM SERVER
         public void run() {
         try{
@@ -36,14 +38,33 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                 String[] str = new String[3];
                 str = received.split(";");
                 //System.out.println("str[0] = "+str[0]+" / str[1] = "+str[1]);
+                //login checker
+                if(clientFrame.loggedIn == false){
+                    if (str[0].equals("full")) {
+                        clientFrame.OutputLogArea.setText("The game is currently full.");
+                    } else if (str[0].equals("taken")) {
+                        clientFrame.OutputLogArea.setText("That username is already taken. Enter a new username");
+                    } else if (str[0].equals("login")) {
+                        clientFrame.OutputLogArea.setText("Successfully logged in.");
+                        clientFrame.username = str[2];
+                        clientFrame.loggedIn = true;
+                    }
+                }
+                
                 switch(str[0]) {
                     case "output":
                         System.out.println("Setting output area");
                         clientFrame.OutputLogArea.setText(str[1]);
                         break;
                     case "map":
+                        unregistered = false;
                         System.out.println("Setting map area");
                         clientFrame.mapTextArea.setText(str[1]);
+                        for (int i = 0; i < 9; i++) {
+                            for (int z = 0; z < 20; z++) {
+                                // this is supposed to break up str[1] by 20 x 9 and have it display in the textbox instead of what line 46 is doing
+                            }
+                        }     
                         break;
                     default:
                         System.out.println(str[0]);
@@ -59,6 +80,7 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
      */
     public NewJFrame() {
         initComponents();
+
     }
 
     /**
@@ -143,26 +165,26 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane4))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -171,25 +193,29 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
 
     private void mapTextAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_mapTextAreaKeyPressed
         try {
+            clientFrame.OutputLogArea.setText(username);
+            if((unregistered)) {
             switch(evt.getKeyCode()) {
                    case KeyEvent.VK_UP:
-                       sendString("command;up");
+                       sendString("command;" + username + ";up");
                        break;
                    case KeyEvent.VK_DOWN:
-                       sendString("command;down");
+                       sendString("command;" + username + ";down");
                        break;
                    case KeyEvent.VK_LEFT:
-                       sendString("command;left");
+                       sendString("command;" + username + ";left");
                        break;
                    case KeyEvent.VK_RIGHT:
-                       sendString("command;right");
+                       sendString("command;" + username + ";right");
                        break;
             }
-            // wait for map and generate it
-            //String map = this.recvString();
-            //this.mapTextArea.setText(map);
+            } else {
+                System.out.println("User not connected to any session.");
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.out.println("Username not submitted yet.");
         }
     }//GEN-LAST:event_mapTextAreaKeyPressed
 
@@ -206,18 +232,42 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
         try {
             switch(evt.getKeyCode()) {
                    case KeyEvent.VK_ENTER:
-                       String request = logArea.getText().replaceAll("\n", "");
-                       String username = request + ";";
-                       String str = "username;"+username;
-                       this.sendString(str);
-                       this.logArea.setText("");
-                       this.logArea.setCaretPosition(0);
-                       Random rand = new Random();
-                       this.playerID = rand.nextInt();
-                       //String yep = recvString();
-                       //yep += this.playerID;
-                       //this.OutputLogArea.setText(yep);
-                       break;
+                        if (loggedIn == false) { // assume the user is trying to register to play
+                            String tempUsername = logArea.getText().replaceAll("\n", ""); //get username from client
+                            String toServer = "username;"+tempUsername+"; null";
+                            this.sendString(toServer);
+                            System.out.println("Sent username to server");
+                            //String received = recvString(); //get string from server
+                            //System.out.println("Received username response from server.");
+                            //String[] str = new String[3];
+                            //str = received.split(";");
+                            /*if (str[0].equals("full")) {
+                                clientFrame.logArea.setText("The game is currently full.");
+
+                            } else if (str[0].equals("taken")) {
+                                clientFrame.logArea.setText("That username is already taken. Enter a new username");
+                            } else if (str[0].equals("login")) {
+                                clientFrame.logArea.setText("Successfully logged in.");
+                                username = tempUsername;
+                                loggedIn = true;
+                            }*/
+                           this.logArea.setText(""); // reset log input lines
+                           this.logArea.setCaretPosition(0); // reset log input lines
+                           /*username = logArea.getText().replaceAll("\n", "");
+                           String append = username + ";";
+                           String str = "username;" + append.replaceAll(" ", ";");
+                           this.sendString(str);
+                           this.logArea.setText("");
+                           this.logArea.setCaretPosition(0); // reset log input lines
+                           break;*/
+                       } else {
+                            String[] input = logArea.getText().replaceAll("\n", "").split(" ");
+                            switch(input[0]) { // just setting up the logarea past login
+                                case "attack":
+                                    break;
+
+                            }
+                       }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -277,30 +327,32 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
         }
         //</editor-fold>
         /* Create and display the form */
-        
+        try {
+            address = InetAddress.getByName("230.0.0.1");
+            socket = new MulticastSocket(4446);
+            socket.joinGroup(address);
+            NewJFrame listener = new NewJFrame();
+            Thread thread1 = new Thread(listener);
+            thread1.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+                        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 /*NewJFrame*/ clientFrame = new NewJFrame();
                 clientFrame.setLocationRelativeTo(null);
                 clientFrame.setVisible(true);
-                clientFrame.mapTextArea.setText("starting text");
-                try {
-                    address = InetAddress.getByName("230.0.0.1");
-                    socket = new MulticastSocket(4446);
-                    socket.joinGroup(address);
-                    //MulticastClient listener = new MulticastClient();
-                    NewJFrame listener = new NewJFrame();
-                    Thread thread1 = new Thread(listener);
-                    thread1.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                clientFrame.statsArea.setText("Welcome to DDND!\nPlease enter your username in the log area (bottom-most section) and your stats separated by spaces:\nSTRENGTH\nDEXTERITY\nCONSTITUTION\nINTELLIGENCE\nWISDOM\nCHARISMA\nHEALTH\nSubmit with the ENTER key afterwards.");
+                //try to login to server
+                
+                
             //socket.leaveGroup(address);
             //socket.close(); 
             }
         });
     }
-
+    
     static NewJFrame clientFrame;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea OutputLogArea;
