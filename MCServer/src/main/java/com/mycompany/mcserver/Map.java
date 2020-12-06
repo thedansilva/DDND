@@ -41,6 +41,22 @@ public class Map {
         characters.add(character);
     }
     
+    public String getAllStats() {
+        String statsList = "";
+        for(int z = 0; z < characters.size(); z++) {
+            if(characters.get(z).getHealth() > 0) {
+                statsList += characters.get(z).getUsername() + " (" + characters.get(z).getCharClass() + "): " + 
+                        "HP " + characters.get(z).getHealth() + " | " +
+                        "STR " + characters.get(z).getStrength() + " | " +
+                        "INT " + characters.get(z).getIntelligence() + " | " +
+                        "DEF " + characters.get(z).getDefense() +  " | " +
+                        "RES " + characters.get(z).getResistance();
+            }
+            statsList += "\n";
+        }
+        return "stats;" + statsList;
+    }
+    
     public void generateMap() {
         boolean playerFound = false; // boolean to see if a player was spotted at this location.
         for (int x = 0; x < 9; x++) {

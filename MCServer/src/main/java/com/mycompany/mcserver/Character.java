@@ -21,6 +21,7 @@ public class Character {
     int atkrange;
     int splrange;
     int splslots;
+    int moverange;
     String username; // the associated username for this character
     char icon; // to be displayed on the map
     String charClass;
@@ -50,6 +51,7 @@ public class Character {
                this.atkrange = 1;
                this.splrange = 4;
                this.splslots = 4;
+               this.moverange = 5;
                break;
            case "barbarian": 
                this.strength = 19;
@@ -62,6 +64,7 @@ public class Character {
                this.atkrange = 1;
                this.splrange = 0;
                this.splslots = 0;
+               this.moverange = 4;
                break;
            case "mage": 
                this.strength = 9;
@@ -74,7 +77,9 @@ public class Character {
                this.atkrange = 1;
                this.splrange = 6;
                this.splslots = 6;
-               break;            
+               this.moverange = 4;
+               break;       
+           default:
            case "rogue": 
                this.strength = 17;
                this.dexterity = 18;
@@ -86,12 +91,41 @@ public class Character {
                this.atkrange = 5;
                this.splrange = 0;
                this.splslots = 0;
+               this.moverange = 5;
                break;               
        }
     }
-        
+          
+    public int getStrength() {
+        return this.strength;
+    }
+            
+    public int getDexterity() {
+        return this.dexterity;
+    }
+                
+    public int getIntelligence() {
+        return this.intelligence;
+    }
+    
     public int getHealth() {
         return this.health;
+    }
+    
+    public int getDefense() {
+        return this.defense;
+    }
+    
+    public int getResistance() {
+        return this.resistance;
+    }
+    
+    public int getPotionCount() {
+        return this.potionCount;
+    }
+    
+    public void setPotionCount(int newCount) {
+        this.potionCount = newCount;
     }
     
     public void setHealth(int newHealth) {
@@ -128,5 +162,9 @@ public class Character {
     
     public void setIcon(char newIcon) {
         this.icon = newIcon;
+    }
+    
+    public String getCharClass() {
+        return this.charClass;
     }
 }

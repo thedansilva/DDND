@@ -54,6 +54,7 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                 
                 switch(str[0]) {
                     case "stats":
+                        clientFrame.statsArea.setText(str[1]);
                         break;
                     case "output":
                         System.out.println("Setting output area");
@@ -342,7 +343,7 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                 /*NewJFrame*/ clientFrame = new NewJFrame();
                 clientFrame.setLocationRelativeTo(null);
                 clientFrame.setVisible(true);
-                clientFrame.statsArea.setText("Welcome to DDND!\nPlease enter your username in the log area followed by a class:\n- cleric\n- barbarian\n- mage\n- rogue");
+                clientFrame.OutputLogArea.setText("Welcome to DDND!\nPlease enter your username in the log area followed by a class:\n- cleric\n- barbarian\n- mage\n- rogue");
                 //try to login to server
                 
                 

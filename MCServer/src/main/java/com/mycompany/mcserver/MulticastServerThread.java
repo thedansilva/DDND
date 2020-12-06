@@ -80,6 +80,8 @@ public class MulticastServerThread extends Thread {
                                 pkt = buildPacket(map.returnMap());
                                 socket.send(pkt);
                                 playerCount++;
+                                pkt = buildPacket(map.getAllStats());
+                                socket.send(pkt);
                             }
                         }
 
