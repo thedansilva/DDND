@@ -46,7 +46,7 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                     } else if (str[0].equals("taken")) {
                         clientFrame.OutputLogArea.setText("That username is already taken. Enter a new username");
                     } else if (str[0].equals("login")) {
-                        clientFrame.OutputLogArea.setText("Successfully logged in.");
+                        clientFrame.OutputLogArea.setText("Successfully logged in as " + str[1] + ".\n");
                         clientFrame.username = str[2];
                         clientFrame.loggedIn = true;
                     }
@@ -57,7 +57,8 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                         break;
                     case "output":
                         System.out.println("Setting output area");
-                        clientFrame.OutputLogArea.setText(str[1]);
+                        clientFrame.OutputLogArea.append(str[1]+"\n");
+                        clientFrame.OutputLogArea.setCaretPosition(clientFrame.OutputLogArea.getText().length());
                         break;
                     case "map":
                         unregistered = false;
@@ -173,6 +174,7 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
         OutputLogArea.setForeground(new java.awt.Color(255, 255, 255));
         OutputLogArea.setLineWrap(true);
         OutputLogArea.setRows(5);
+        OutputLogArea.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         OutputLogArea.setFocusable(false);
         jScrollPane4.setViewportView(OutputLogArea);
 
