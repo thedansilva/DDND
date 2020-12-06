@@ -53,19 +53,34 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                 }
                 
                 switch(str[0]) {
+                    case "stats":
+                        break;
                     case "output":
                         System.out.println("Setting output area");
                         clientFrame.OutputLogArea.setText(str[1]);
                         break;
                     case "map":
-                        if (clientFrame.loggedIn) {
-                            System.out.println("Setting map area");
-                            clientFrame.mapTextArea.setText(str[1]);
-                            for (int i = 0; i < 9; i++) {
-                                for (int z = 0; z < 20; z++) {
-                                    // this is supposed to break up str[1] by 20 x 9 and have it display in the textbox instead of what line 46 is doing
-                                }
-                            }     
+                        unregistered = false;
+                        System.out.println("Setting map area");
+                        //clientFrame.mapTextArea.setText(str[1]);
+                        clientFrame.mapTextArea.setText("");
+                        
+                        String[] mapStr = new String[9];
+                        mapStr[0] = str[1].substring(0,20);
+                        mapStr[1] = str[1].substring(20,40);
+                        mapStr[2] = str[1].substring(40,60);
+                        mapStr[3] = str[1].substring(60,80);
+                        mapStr[4] = str[1].substring(80,100);
+                        mapStr[5] = str[1].substring(100,120);
+                        mapStr[6] = str[1].substring(120,140);
+                        mapStr[7] = str[1].substring(140,160);
+                        mapStr[8] = str[1].substring(160,180);
+                        for (int i = 0; i < 9; i++) {
+                            clientFrame.mapTextArea.append(mapStr[i]+"\n");
+                            
+                            /*for (int z = 0; z < 20; z++) {
+                                // this is supposed to break up str[1] by 20 x 9 and have it display in the textbox instead of what line 46 is doing
+                            }*/
                         }
                         break;
                     default:
@@ -167,10 +182,10 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 481, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane4))
                 .addContainerGap())
@@ -181,7 +196,7 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)

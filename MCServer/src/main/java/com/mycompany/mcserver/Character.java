@@ -18,6 +18,9 @@ public class Character {
     int resistance; // basically magical defense
     int x, y;
     int potionCount;
+    int atkrange;
+    int splrange;
+    int splslots;
     String username; // the associated username for this character
     char icon; // to be displayed on the map
     String charClass;
@@ -44,6 +47,9 @@ public class Character {
                this.potionCount = 3;
                this.defense = 9;
                this.resistance = 14;
+               this.atkrange = 1;
+               this.splrange = 4;
+               this.splslots = 4;
                break;
            case "barbarian": 
                this.strength = 19;
@@ -53,6 +59,9 @@ public class Character {
                this.potionCount = 1;
                this.defense = 18;
                this.resistance = 5;
+               this.atkrange = 1;
+               this.splrange = 0;
+               this.splslots = 0;
                break;
            case "mage": 
                this.strength = 9;
@@ -62,6 +71,9 @@ public class Character {
                this.potionCount = 2;
                this.defense = 9;
                this.resistance = 18;
+               this.atkrange = 1;
+               this.splrange = 6;
+               this.splslots = 6;
                break;            
            case "rogue": 
                this.strength = 17;
@@ -71,6 +83,9 @@ public class Character {
                this.potionCount = 2;
                this.defense = 15;
                this.resistance = 10;
+               this.atkrange = 5;
+               this.splrange = 0;
+               this.splslots = 0;
                break;               
        }
     }
