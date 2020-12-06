@@ -65,6 +65,8 @@ public class MulticastServerThread extends Thread {
                                 pkt = buildPacket("login; player has logged in;"+players[playerCount]);
                                 socket.send(pkt);
                                 playerCount++;
+                                pkt = buildPacket("output;New player: "+players[playerCount-1]+" has joined.");
+                                socket.send(pkt);
                                 //generate map
                                 char icon = str[1].charAt(0);
                                 map.addCharacter(new Character(14, 14, 14, 14, 14, 14, 20, 3, 3, str[1], icon));
@@ -102,15 +104,23 @@ public class MulticastServerThread extends Thread {
                         switch(str[2]) {
                             case "up":
                                 map.moveCharacter(str[1], 0);
+                                pkt = buildPacket("output;"+str[1]+" moved up.");
+                                socket.send(pkt);
                                 break;
                             case "left":
                                 map.moveCharacter(str[1], 1);
+                                pkt = buildPacket("output;"+str[1]+" moved left.");
+                                socket.send(pkt);
                                 break;
                             case "down":
                                 map.moveCharacter(str[1], 2);
+                                pkt = buildPacket("output;"+str[1]+" moved down.");
+                                socket.send(pkt);
                                 break;
                             case "right":
                                 map.moveCharacter(str[1], 3);
+                                pkt = buildPacket("output;"+str[1]+" moved right.");
+                                socket.send(pkt);
                                 break;
                         }
                         System.out.println(map.getCoords(str[1]));

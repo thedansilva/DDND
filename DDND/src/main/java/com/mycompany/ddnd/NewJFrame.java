@@ -41,11 +41,14 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                 //login checker
                 if(clientFrame.loggedIn == false){
                     if (str[0].equals("full")) {
-                        clientFrame.OutputLogArea.setText("The game is currently full.");
+                        //clientFrame.OutputLogArea.setText("The game is currently full.");
+                        clientFrame.OutputLogArea.append("The game is currently full.\n");
                     } else if (str[0].equals("taken")) {
-                        clientFrame.OutputLogArea.setText("That username is already taken. Enter a new username");
+                        //clientFrame.OutputLogArea.setText("That username is already taken. Enter a new username.");
+                        clientFrame.OutputLogArea.append("That username is already taken. Enter a new username.\n");
                     } else if (str[0].equals("login")) {
-                        clientFrame.OutputLogArea.setText("Successfully logged in.");
+                        //clientFrame.OutputLogArea.setText("Successfully logged in.");
+                        clientFrame.OutputLogArea.append("Successfully logged in.\n");
                         clientFrame.username = str[2];
                         clientFrame.loggedIn = true;
                     }
@@ -54,7 +57,9 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                 switch(str[0]) {
                     case "output":
                         System.out.println("Setting output area");
-                        clientFrame.OutputLogArea.setText(str[1]);
+                        //clientFrame.OutputLogArea.setText(str[1]);
+                        clientFrame.OutputLogArea.append(str[1]+"\n");
+                        clientFrame.OutputLogArea.setCaretPosition(clientFrame.OutputLogArea.getText().length());
                         break;
                     case "map":
                         unregistered = false;
@@ -207,7 +212,7 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
 
     private void mapTextAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_mapTextAreaKeyPressed
         try {
-            clientFrame.OutputLogArea.setText(username);
+            //clientFrame.OutputLogArea.setText(username);
             if((unregistered)) {
             switch(evt.getKeyCode()) {
                    case KeyEvent.VK_UP:
