@@ -9,9 +9,7 @@ import java.util.*;
  * @author dan
  */
 public class Map {
-
-    final String EMPTY = ".";
-    final String[] WALL = {"|", "-"};
+    
     String mapData[][]; // is a combination of the map data and the character's positions
     String mapLayout[][]; // comes from the map file given
     ArrayList<Character> characters;

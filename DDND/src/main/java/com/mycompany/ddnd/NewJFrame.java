@@ -61,9 +61,9 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                             break;
                             
                         case "output":
-                            clientFrame.OutputLogArea.setText(str[1]);
-                            //clientFrame.OutputLogArea.append(str[1] + "\n");
-                            //clientFrame.OutputLogArea.setCaretPosition(clientFrame.OutputLogArea.getText().length());
+                            //clientFrame.OutputLogArea.setText(str[1]);
+                            clientFrame.OutputLogArea.append(str[1]);
+                            clientFrame.OutputLogArea.setCaretPosition(clientFrame.OutputLogArea.getText().length());
                             break;
                             
                         case "map":

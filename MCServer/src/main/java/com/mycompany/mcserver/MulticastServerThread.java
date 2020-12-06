@@ -115,9 +115,15 @@ public class MulticastServerThread extends Thread {
             }
 
             // GAME HAS STARTED PAST THIS POINT
-            System.out.println("GAME STARTING");
             try {
                 byte[] empty;
+                ArrayList<Character> order = map.getPlayers();
+                Collections.shuffle(order);
+                socket.send(buildPacket("output;GAME STARTING\n"));
+                socket.send(buildPacket("output;Order:\n"));
+                for(int z = 0; z < order.size(); z++) {
+                    socket.send(buildPacket("output;" + order.get(z).getUsername() + "\n"));
+                }
                 while (map.playersAlive() > 1) {
                     String[] str = new String[3];
                     empty = new byte[256];
@@ -135,22 +141,22 @@ public class MulticastServerThread extends Thread {
                             switch (str[2]) {
                                 case "up":
                                     map.moveCharacter(str[1], 0);
-                                    pkt = buildPacket("output;" + str[1] + " moved up.");
+                                    pkt = buildPacket("output;" + str[1] + " moved up.\n");
                                     socket.send(pkt);
                                     break;
                                 case "left":
                                     map.moveCharacter(str[1], 1);
-                                    pkt = buildPacket("output;" + str[1] + " moved left.");
+                                    pkt = buildPacket("output;" + str[1] + " moved left.\n");
                                     socket.send(pkt);
                                     break;
                                 case "down":
                                     map.moveCharacter(str[1], 2);
-                                    pkt = buildPacket("output;" + str[1] + " moved down.");
+                                    pkt = buildPacket("output;" + str[1] + " moved down.\n");
                                     socket.send(pkt);
                                     break;
                                 case "right":
                                     map.moveCharacter(str[1], 3);
-                                    pkt = buildPacket("output;" + str[1] + " moved right.");
+                                    pkt = buildPacket("output;" + str[1] + " moved right.\n");
                                     socket.send(pkt);
                                     break;
                             }
