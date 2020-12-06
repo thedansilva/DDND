@@ -270,6 +270,7 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                 case KeyEvent.VK_ENTER:
                     if (!listenerUp) {
                         try {
+                            listenerUp = true; // disable socket joining multiple times
                             address = InetAddress.getByName("230.0.0.1");
                             socket = new MulticastSocket(4446);
                             socket.joinGroup(address);

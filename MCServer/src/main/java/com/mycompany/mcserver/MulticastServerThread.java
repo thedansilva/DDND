@@ -102,13 +102,9 @@ public class MulticastServerThread extends Thread {
                             pkt = buildPacket(map.returnMap());
                             socket.send(pkt);
                         }
-                        if (str[0].equals("start")) {
-                            for (int z = 0; z < map.getPlayers().size(); z++) {
-                                if (str[1].equals(map.getPlayers().get(z).getUsername())) {
+                        if (str[0].equals("start") && (!str[1].equals(""))) {
                                     System.out.println("Found logged in player requesting start. Starting game.");
                                     gameStarted = true;
-                                }
-                            }
                         }
                     } catch (ArrayIndexOutOfBoundsException e) {
                         System.out.println("array error caught");
@@ -139,23 +135,23 @@ public class MulticastServerThread extends Thread {
                             switch (str[2]) {
                                 case "up":
                                     map.moveCharacter(str[1], 0);
-                                    //pkt = buildPacket("output;" + str[1] + " moved up.");
-                                    //socket.send(pkt);
+                                    pkt = buildPacket("output;" + str[1] + " moved up.");
+                                    socket.send(pkt);
                                     break;
                                 case "left":
                                     map.moveCharacter(str[1], 1);
-                                    //pkt = buildPacket("output;" + str[1] + " moved left.");
-                                    //socket.send(pkt);
+                                    pkt = buildPacket("output;" + str[1] + " moved left.");
+                                    socket.send(pkt);
                                     break;
                                 case "down":
                                     map.moveCharacter(str[1], 2);
-                                    //pkt = buildPacket("output;" + str[1] + " moved down.");
-                                    //socket.send(pkt);
+                                    pkt = buildPacket("output;" + str[1] + " moved down.");
+                                    socket.send(pkt);
                                     break;
                                 case "right":
                                     map.moveCharacter(str[1], 3);
-                                    //pkt = buildPacket("output;" + str[1] + " moved right.");
-                                    //socket.send(pkt);
+                                    pkt = buildPacket("output;" + str[1] + " moved right.");
+                                    socket.send(pkt);
                                     break;
                             }
                             System.out.println(map.getCoords(str[1]));
