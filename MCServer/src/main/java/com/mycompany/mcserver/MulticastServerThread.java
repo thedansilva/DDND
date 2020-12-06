@@ -31,8 +31,9 @@ public class MulticastServerThread extends Thread {
             } catch (IOException e) {
             };
             DatagramPacket packet, pkt;
-            String[] players = new String[5];
-            int playerCount = 0;
+            //String[] players = new String[5];
+            ArrayList<String> players = new ArrayList<String>();
+            //int playerCount = 0;
             try {
                 byte[] empty;
 
@@ -57,25 +58,25 @@ public class MulticastServerThread extends Thread {
                         //decide what to do with packet
                         //start with adding username to players array
                         if (str[0].equals("username")) {
-                            if (playerCount >= 5 || str[1].equals("")) { //check if game is full
+                            if (players.size() >= 5 || str[1].equals("")) { //check if game is full
                                 System.out.println("Game is full.");
                                 pkt = buildPacket("full; Game is full; max of 5 players");
                                 socket.send(pkt);
                             } else {
                                 boolean taken = false;
-                                for (int i = 0; i < players.length; i++) { //check for taken name
-                                    if (str[1].equals(players[i])) {
-                                        System.out.println("Player name: " + players[i] + " taken.");
-                                        pkt = buildPacket("taken; player name already taken;" + players[i]);
+                                for (int i = 0; i < players.size(); i++) { //check for taken name
+                                    if (str[1].equals(players.get(i))) {
+                                        System.out.println("Player name: " + players.get(i) + " taken.");
+                                        pkt = buildPacket("taken; player name already taken;" + players.get(i));
                                         socket.send(pkt);
-                                        i = players.length;
+                                        i = players.size();
                                         taken = true;
                                     }
                                 }
                                 if (taken == false) {
                                     System.out.println("Player name: " + str[1] + " has joined.");
-                                    players[playerCount] = str[1];
-                                    pkt = buildPacket("login;player has logged in;" + players[playerCount]);
+                                    players.add(str[1]);
+                                    pkt = buildPacket("login;player has logged in;" + players.get(players.size() - 1));
                                     socket.send(pkt);
                                     //generate map
                                     char icon = str[1].charAt(0);
@@ -91,7 +92,6 @@ public class MulticastServerThread extends Thread {
                                     map.generateMap();
                                     pkt = buildPacket(map.returnMap());
                                     socket.send(pkt);
-                                    playerCount++;
                                     pkt = buildPacket(map.getAllStats());
                                     socket.send(pkt);
                                 }
@@ -124,6 +124,7 @@ public class MulticastServerThread extends Thread {
                 for(int z = 0; z < order.size(); z++) {
                     socket.send(buildPacket("output;" + order.get(z).getUsername() + "\n"));
                 }
+                int playersCount = order.size();
                 while (map.playersAlive() > 1) {
                     String[] str = new String[3];
                     empty = new byte[256];
