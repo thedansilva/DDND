@@ -38,7 +38,7 @@ public class MulticastServerThread extends Thread {
                     map.printPlayers();
                     String received = new String(packet.getData(), 0, packet.getLength());
                     System.out.println("Received: "+received);
-                    str = received.split(";");
+                    str = received.replaceAll(" ", ";").split(";");
                     System.out.println("str[0] = "+str[0]+" / str[1] = "+str[1]);
 
                     //decide what to do with packet
@@ -64,15 +64,22 @@ public class MulticastServerThread extends Thread {
                                 players[playerCount] = str[1];
                                 pkt = buildPacket("login; player has logged in;"+players[playerCount]);
                                 socket.send(pkt);
-                                playerCount++;
                                 //generate map
                                 char icon = str[1].charAt(0);
                                 int[] safeCoords= map.getSafeCoords();
-                                map.addCharacter(new Character(14, 14, 14, 20, safeCoords[0], safeCoords[1], str[1], icon));
+                                // available classes for use:
+                                // Cleric: bad physical, good spells (6), 3 potions, medium HP
+                                // Barbarian: amazing physical, no spells, 1 potion, big HP
+                                // Mage: great spells (7), bad physical attack (dagger), 2 potions, low HP
+                                // Rogue: infinite ranged attacks but meh health and 1 potion, 
+                                String charClass = str[2];
+                                System.out.println("Logging in " + players[playerCount] + " as a " + charClass);
+                                map.addCharacter(new Character(safeCoords[0], safeCoords[1], str[1], icon, charClass));
                                 //playersArray = map.getPlayers();
                                 map.generateMap();
                                 pkt = buildPacket(map.returnMap());
                                 socket.send(pkt);
+                                playerCount++;
                             }
                         }
 
