@@ -21,8 +21,9 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
     static InetAddress address;
     static DatagramPacket sendPacket;
     static DatagramPacket recvPacket;
-    public int playerID = 0;
-    String username;
+    String username = "";
+    String usernameRequest = "";
+    boolean unregistered = true;
     // USED FOR PARSING DATA FROM SERVER
         public void run() {
         try{
@@ -42,8 +43,14 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                         clientFrame.OutputLogArea.setText(str[1]);
                         break;
                     case "map":
+                        unregistered = false;
                         System.out.println("Setting map area");
                         clientFrame.mapTextArea.setText(str[1]);
+                        for (int i = 0; i < 9; i++) {
+                            for (int z = 0; z < 20; z++) {
+                                // this is supposed to break up str[1] by 20 x 9 and have it display in the textbox instead of what line 46 is doing
+                            }
+                        }     
                         break;
                     default:
                         System.out.println(str[0]);
@@ -59,6 +66,7 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
      */
     public NewJFrame() {
         initComponents();
+
     }
 
     /**
@@ -143,26 +151,26 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane4))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -171,6 +179,8 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
 
     private void mapTextAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_mapTextAreaKeyPressed
         try {
+            clientFrame.OutputLogArea.setText(username);
+            if((unregistered)) {
             switch(evt.getKeyCode()) {
                    case KeyEvent.VK_UP:
                        sendString("command;" + username + ";up");
@@ -184,6 +194,9 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                    case KeyEvent.VK_RIGHT:
                        sendString("command;" + username + ";right");
                        break;
+            }
+            } else {
+                System.out.println("User not connected to any session.");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -205,26 +218,22 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
         try {
             switch(evt.getKeyCode()) {
                    case KeyEvent.VK_ENTER:
-                       username = logArea.getText().replaceAll("\n", "");
-                       String append = username + ";";
-                       String str = "username;"+append.replaceAll(" ", ";");
-                       try {
-                           address = InetAddress.getByName("230.0.0.1");
-                           socket = new MulticastSocket(4446);
-                           socket.joinGroup(address);
-                           NewJFrame listener = new NewJFrame();
-                           Thread thread1 = new Thread(listener);
-                           thread1.start();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                       this.sendString(str);
-                       this.logArea.setText("");
-                       this.logArea.setCaretPosition(0);
-                       this.statsArea.setText("Submission sent.");
-                       Random rand = new Random();
-                       this.playerID = rand.nextInt();
-                       break;
+                       if (username.equals("")) { // assume the user is trying to register to play
+                           username = logArea.getText().replaceAll("\n", "");
+                           String append = username + ";";
+                           String str = "username;" + append.replaceAll(" ", ";");
+                           this.sendString(str);
+                           this.logArea.setText("");
+                           this.logArea.setCaretPosition(0); // reset log input lines
+                           break;
+                       } else {
+                            String[] input = logArea.getText().replaceAll("\n", "").split(" ");
+                            switch(input[0]) { // just setting up the logarea past login
+                                case "attack":
+                                    break;
+
+                            }
+                       }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -284,7 +293,17 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
         }
         //</editor-fold>
         /* Create and display the form */
-        
+        try {
+            address = InetAddress.getByName("230.0.0.1");
+            socket = new MulticastSocket(4446);
+            socket.joinGroup(address);
+            NewJFrame listener = new NewJFrame();
+            Thread thread1 = new Thread(listener);
+            thread1.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+                        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 /*NewJFrame*/ clientFrame = new NewJFrame();

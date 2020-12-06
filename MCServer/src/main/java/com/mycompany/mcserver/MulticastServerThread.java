@@ -43,10 +43,15 @@ public class MulticastServerThread extends Thread {
 
                     //decide what to do with packet
                     //start with adding username to players array
-                    if (str[0].equals("username")) {
-                        if (playerCount >= 5) {
-                            pkt = buildPacket("Sorry, the game is at the max number of players.");
-                            socket.send(pkt);
+                    if (str[0].equals("username")) {                  
+                        boolean taken = false;
+                        for(int z = 0; z < playersArray.size(); z++) {
+                            System.out.println("Player " + (z + 1) + " name: " + playersArray.get(z).getUsername());
+                            if (str[1].equals(playersArray.get(z).getUsername())) {
+                                taken = true;
+                            }
+                        }
+                        if (playerCount >= 5 || taken) {
                         } else {
                             players[playerCount] = str[1];
                             System.out.println("Player "+(playerCount+1)+": "+players[playerCount]+" joined.");
@@ -54,10 +59,10 @@ public class MulticastServerThread extends Thread {
                             char icon = str[1].charAt(0);
                             map.addCharacter(new Character(14, 14, 14, 14, 14, 14, 20, 3, 3, str[1], icon));
                             playersArray = map.getPlayers();
+                            map.generateMap();
+                            pkt = buildPacket(map.returnMap());
+                            socket.send(pkt);
                         }
-                        map.generateMap();
-                        pkt = buildPacket(map.returnMap());
-                        socket.send(pkt);
                     } else if (str[0].equals("info")) {
 
                     } else if (str[0].equals("command")) {
