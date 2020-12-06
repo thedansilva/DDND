@@ -23,6 +23,7 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
     static DatagramPacket recvPacket;
     String username = "";
     String usernameRequest = "";
+    boolean loggedIn = false;
     boolean unregistered = true;
     // USED FOR PARSING DATA FROM SERVER
         public void run() {
@@ -37,6 +38,19 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                 String[] str = new String[3];
                 str = received.split(";");
                 //System.out.println("str[0] = "+str[0]+" / str[1] = "+str[1]);
+                //login checker
+                if(clientFrame.loggedIn == false){
+                    if (str[0].equals("full")) {
+                        clientFrame.OutputLogArea.setText("The game is currently full.");
+                    } else if (str[0].equals("taken")) {
+                        clientFrame.OutputLogArea.setText("That username is already taken. Enter a new username");
+                    } else if (str[0].equals("login")) {
+                        clientFrame.OutputLogArea.setText("Successfully logged in.");
+                        clientFrame.username = str[2];
+                        clientFrame.loggedIn = true;
+                    }
+                }
+                
                 switch(str[0]) {
                     case "output":
                         System.out.println("Setting output area");
@@ -218,14 +232,34 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
         try {
             switch(evt.getKeyCode()) {
                    case KeyEvent.VK_ENTER:
-                       if (username.equals("")) { // assume the user is trying to register to play
-                           username = logArea.getText().replaceAll("\n", "");
+                        if (loggedIn == false) { // assume the user is trying to register to play
+                            String tempUsername = logArea.getText().replaceAll("\n", ""); //get username from client
+                            String toServer = "username;"+tempUsername+"; null";
+                            this.sendString(toServer);
+                            System.out.println("Sent username to server");
+                            //String received = recvString(); //get string from server
+                            //System.out.println("Received username response from server.");
+                            //String[] str = new String[3];
+                            //str = received.split(";");
+                            /*if (str[0].equals("full")) {
+                                clientFrame.logArea.setText("The game is currently full.");
+
+                            } else if (str[0].equals("taken")) {
+                                clientFrame.logArea.setText("That username is already taken. Enter a new username");
+                            } else if (str[0].equals("login")) {
+                                clientFrame.logArea.setText("Successfully logged in.");
+                                username = tempUsername;
+                                loggedIn = true;
+                            }*/
+                           this.logArea.setText(""); // reset log input lines
+                           this.logArea.setCaretPosition(0); // reset log input lines
+                           /*username = logArea.getText().replaceAll("\n", "");
                            String append = username + ";";
                            String str = "username;" + append.replaceAll(" ", ";");
                            this.sendString(str);
                            this.logArea.setText("");
                            this.logArea.setCaretPosition(0); // reset log input lines
-                           break;
+                           break;*/
                        } else {
                             String[] input = logArea.getText().replaceAll("\n", "").split(" ");
                             switch(input[0]) { // just setting up the logarea past login
@@ -310,12 +344,15 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                 clientFrame.setLocationRelativeTo(null);
                 clientFrame.setVisible(true);
                 clientFrame.statsArea.setText("Welcome to DDND!\nPlease enter your username in the log area (bottom-most section) and your stats separated by spaces:\nSTRENGTH\nDEXTERITY\nCONSTITUTION\nINTELLIGENCE\nWISDOM\nCHARISMA\nHEALTH\nSubmit with the ENTER key afterwards.");
+                //try to login to server
+                
+                
             //socket.leaveGroup(address);
             //socket.close(); 
             }
         });
     }
-
+    
     static NewJFrame clientFrame;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea OutputLogArea;

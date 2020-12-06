@@ -129,6 +129,47 @@ public class Map {
         return "y";
     }
     
+    public int[] getSafeCoords() {
+        Random rand = new Random();
+        int xcoord = 0;
+        int ycoord = 0;
+        boolean safeToSpawn = false;
+        
+        while(!(safeToSpawn)) {
+            
+        xcoord = rand.nextInt(8);
+        ycoord = rand.nextInt(19);
+        System.out.println("Testing " + xcoord + " and  " + ycoord);
+        // check if location is a "."
+        if (mapLayout[xcoord][ycoord].equals(".")) {
+            System.out.println("Location is a . ");
+            safeToSpawn = true;
+        } else {
+            System.out.println("Location is not a '.'. ");
+            safeToSpawn = false;
+        }
+        // check if player is there
+        for(int z = 0; z < characters.size(); z++) {
+                        if(characters.get(z).getX() == xcoord && characters.get(z).getY() == ycoord) {
+                            safeToSpawn = false; // disable finding new players for this location, almost like a post-function break; statement
+                            System.out.println("Found player " + characters.get(z).getUsername() + " at position " + getCoords(characters.get(z).getUsername()));
+                        }
+                }
+        
+        // if safetospawn, return coordinates
+        if(safeToSpawn) {
+            System.out.println("SAFE TO SPAWN AT " + xcoord + " " + ycoord);
+            int safe[] = new int[2];
+            safe[0] = xcoord;
+            safe[1] = ycoord;
+            return safe;
+        }
+        // if not, WE GO AGANE
+            
+            
+        }
+        return new int[2];
+    }
     
     public void moveCharacter(String username, int x) {
         for(int z = 0; z < characters.size(); z++) {   
