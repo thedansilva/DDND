@@ -135,6 +135,7 @@ public class MulticastServerThread extends Thread {
                 int currentPlayer = 0;
                 int moveRange = 0;
                 int movesLeft = 0;
+                boolean turnOver = false;
                 int checkX, checkY; // used to check if the user's movement actually moved them on the map
                 String currentPlayerUsername = "";
                 String attackresult;
@@ -145,6 +146,8 @@ public class MulticastServerThread extends Thread {
                     moveRange = order.get(currentPlayer).getMoveRange();
                     movesLeft = order.get(currentPlayer).getMoveRange();
                     while (map.playersAlive() > 1 && currentPlayerUsername.equals(order.get(currentPlayer).getUsername())) { // while it is still the current player's turn
+                        pkt = buildPacket(map.getAllStats());
+                        socket.send(pkt);
                         pkt = buildPacket("output;" + currentPlayerUsername + "'s turn:");
                         socket.send(pkt);
                         String[] str = new String[3];
@@ -159,7 +162,7 @@ public class MulticastServerThread extends Thread {
                         If the current player is dead, skip their turn.
                         Check every turn.
                          */
-                        /*
+ /*
                         System.out.println("Sending heartbeat.");
                         checking = true;
                         while (checking) {
@@ -173,8 +176,7 @@ public class MulticastServerThread extends Thread {
                                     }
                                 }
                             }
-                        }
-                         */
+                        }*/
                         socket.receive(packet);
                         try {
                             map.printPlayers();
@@ -183,6 +185,17 @@ public class MulticastServerThread extends Thread {
                             str = received.replaceAll(" ", ";").split(";");
                             System.out.println("str[0] = " + str[0] + " / str[1] = " + str[1]);
                             if (str[1].equals(currentPlayerUsername)) {
+                                if (turnOver) {
+                                    if (currentPlayer + 1 >= playersCount) {
+                                        currentPlayer = 0; //cycle back to first player
+                                    } else {
+                                        if (map.playersAlive() > 1) {
+                                            currentPlayer++; // go to next player
+
+                                        }
+                                    }
+                                    turnOver = false;
+                                }
                                 switch (str[0]) { // switch for the input that the user put in, be it command, attack, spell, potion, or wait
                                     case "command":
                                         checkX = order.get(currentPlayer).getX();
@@ -222,6 +235,7 @@ public class MulticastServerThread extends Thread {
                                         }
                                         break;
                                     case "attack":
+                                        turnOver = true;
                                         // initialized
                                         switch (str[2]) {
                                             case "up":
@@ -251,15 +265,16 @@ public class MulticastServerThread extends Thread {
                                         }
                                         switch (arst[1]) {
                                             case "hit":
-                                                pkt = buildPacket("output;The attack hit!");
+                                                pkt = buildPacket("output;The attack hit!\n");
                                                 socket.send(pkt);
                                                 break;
                                             case "missed":
-                                                pkt = buildPacket("output;The attack missed.");
+                                                pkt = buildPacket("output;The attack missed.\n");
                                                 socket.send(pkt);
                                         }
                                         break;
                                     case "spell":
+                                        turnOver = true;
                                         switch (str[2]) {
                                             case "up":
                                                 attackresult = map.findOpponent(order.get(currentPlayer), 1, 0);
@@ -288,31 +303,24 @@ public class MulticastServerThread extends Thread {
                                         }
                                         switch (arst[1]) {
                                             case "hit":
-                                                pkt = buildPacket("output;The attack hit!");
+                                                pkt = buildPacket("output;The attack hit!\n");
                                                 socket.send(pkt);
                                                 break;
                                             case "missed":
-                                                pkt = buildPacket("output;The attack missed.");
+                                                pkt = buildPacket("output;The attack missed.\n");
                                                 socket.send(pkt);
                                         }
                                         break;
                                     case "potion":
+                                        turnOver = true;
                                         // heal user idk
                                         break;
                                     case "wait":
+                                        turnOver = true;
                                         pkt = buildPacket("output;" + str[1] + " waits.\n");
                                         socket.send(pkt);
-                                        if (currentPlayer + 1 >= playersCount) {
-                                            currentPlayer = 0; //cycle back to first player
-                                        } else {
-                                            if (map.playersAlive() > 1) {
-                                                currentPlayer++; // go to next player
-                                            }
-                                        }
                                         break;
                                 }
-                                pkt = buildPacket(map.getAllStats());
-                                socket.send(pkt);
                                 System.out.println(map.getCoords(str[1]));
                                 map.removeDeadPlayers();
                                 map.generateMap();
