@@ -132,7 +132,7 @@ public class MulticastServerThread extends Thread {
                 int movesLeft = 0;
                 int checkX, checkY; // used to check if the user's movement actually moved them on the map
                 String currentPlayerUsername = "";
-
+                
                 while (map.playersAlive() > 1) {
                     currentPlayerUsername = order.get(currentPlayer).getUsername();
                     moveRange = order.get(currentPlayer).getMoveRange();
