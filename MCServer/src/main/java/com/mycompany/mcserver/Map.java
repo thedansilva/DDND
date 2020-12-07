@@ -95,6 +95,14 @@ public class Map {
         }
     }
 
+    public void removeDeadPlayers() {
+        for (int z = 0; z < characters.size(); z++) {
+            if (characters.get(z).getHealth() < 1) {
+                characters.remove(characters.get(z));
+            }
+        }
+    }
+
     public int playersAlive() {
         int alive = 0;
         for (int z = 0; z < characters.size(); z++) {
@@ -242,7 +250,7 @@ public class Map {
         }
     }
 
-    public void findOpponent(Character char1, int dmgType, int position) {
+    public String findOpponent(Character char1, int dmgType, int position) {
         // for reference:
         // out of bounds negative X: -1
         // out of bounds positive X: 9
@@ -267,6 +275,9 @@ public class Map {
                                 if (characters.get(z).getX() == char1.getX() - i && characters.get(z).getY() == char1.getY() && playerFound == false) {
                                     playerFound = true;
                                     System.out.println("Found player " + characters.get(z).getUsername() + " " + i + " dots near the user.");
+                                    //call attack method with attacker, target, damage type
+                                    String result = attack(char1, characters.get(z), dmgType);
+                                    return result;
                                 } else {
                                 }
                             }
@@ -294,6 +305,9 @@ public class Map {
                                 if (characters.get(z).getX() == char1.getX() && characters.get(z).getY() == char1.getY() - i && playerFound == false) {
                                     playerFound = true;
                                     System.out.println("Found player " + characters.get(z).getUsername() + " " + i + " dots near the user.");
+                                    //call attack method with attacker, target, damage type
+                                    String result = attack(char1, characters.get(z), dmgType);
+                                    return result;
                                 } else {
                                 }
                             }
@@ -314,6 +328,9 @@ public class Map {
                                 if (characters.get(z).getX() == char1.getX() + i && characters.get(z).getY() == char1.getY() && playerFound == false) {
                                     playerFound = true;
                                     System.out.println("Found player " + characters.get(z).getUsername() + " " + z + " dots near the user.");
+                                    //call attack method with attacker, target, damage type
+                                    String result = attack(char1, characters.get(z), dmgType);
+                                    return result;
                                 } else {
                                 }
                             }
@@ -334,6 +351,9 @@ public class Map {
                                 if (characters.get(z).getX() == char1.getX() && characters.get(z).getY() == char1.getY() + i && playerFound == false) {
                                     playerFound = true;
                                     System.out.println("Found player " + characters.get(z).getUsername() + " " + i + " dots near the user.");
+                                    //call attack method with attacker, target, damage type
+                                    String result = attack(char1, characters.get(z), dmgType);
+                                    return result;
                                 } else {
                                 }
                             }
@@ -350,5 +370,36 @@ public class Map {
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("User attack travelling into area out of bounds.");
         }
+        return "";
     }
+
+    public String attack(Character attacker, Character target, int dmgType) {
+        //implement damage calculation, start by rolling to see if attack hits
+        if (dmgType == 0) { //physical attack calculations
+            int hit = (int) (Math.random() * 20 + 1);
+            if (hit >= (20 - attacker.getDexterity())) { //check if attack hits, then calc hp change, return string to server
+                int damage = attacker.getStrength() - target.getDefense();
+                if (damage > 0) { //check to make sure damage isnt smaller than defense 
+                    target.setHealth(target.getHealth() - damage);
+                    return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-" + damage;
+                } else {
+                    target.setHealth(target.getHealth() - 1);
+                    return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-1";
+                }
+            } else {
+                System.out.println("Attack missed. roll - " + hit);
+                return attacker.getUsername() + ";missed;" + target.getUsername() + ";roll-" + hit;
+            }
+        } else { //spell attack calculations
+            int damage = attacker.getIntelligence() - target.getResistance();
+            if (damage > 0) { //check to make sure damage isnt smaller than defense 
+                target.setHealth(target.getHealth() - damage);
+                return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-" + damage;
+            } else {
+                target.setHealth(target.getHealth() - 1);
+                return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-1";
+            }
+        }
+    }
+
 }

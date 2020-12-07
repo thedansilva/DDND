@@ -56,6 +56,9 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                 }
                 if (clientFrame.loggedIn) {
                     switch (str[0]) {
+                        case "heartbeat":
+                            sendString("heartbeat;username;alive");
+                            break;
                         case "stats":
                             clientFrame.statsArea.setText(str[1]);
                             break;

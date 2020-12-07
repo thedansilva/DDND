@@ -3,6 +3,8 @@ package com.mycompany.mcserver;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MulticastServerThread extends Thread {
 
@@ -12,7 +14,8 @@ public class MulticastServerThread extends Thread {
     int type;
     ArrayList<Character> playersArray;
     boolean gameStarted;
-
+    Boolean checking = true;
+    
     public MulticastServerThread(int type) throws IOException {
         super("MulticastServerThread");
         this.type = type;
@@ -117,6 +120,7 @@ public class MulticastServerThread extends Thread {
 
             // GAME HAS STARTED PAST THIS POINT
             try {
+                new MulticastServerThread(2).start(); // heartbeat server
                 byte[] empty;
                 ArrayList<Character> order = map.getPlayers();
                 Collections.shuffle(order);
@@ -125,24 +129,26 @@ public class MulticastServerThread extends Thread {
                 for (int z = 0; z < order.size(); z++) {
                     socket.send(buildPacket("output;" + order.get(z).getUsername() + "\n")); // send order list to users
                 }
-
+                pkt = buildPacket("output;" + "It is currently " + order.get(0).getUsername() + "'s turn.\n");
+                socket.send(pkt);
                 int playersCount = order.size();
                 int currentPlayer = 0;
                 int moveRange = 0;
                 int movesLeft = 0;
                 int checkX, checkY; // used to check if the user's movement actually moved them on the map
                 String currentPlayerUsername = "";
-                
+                String attackresult;
+                String[] arst = {"", "", "", ""};
                 while (map.playersAlive() > 1) {
                     currentPlayerUsername = order.get(currentPlayer).getUsername();
                     moveRange = order.get(currentPlayer).getMoveRange();
                     movesLeft = order.get(currentPlayer).getMoveRange();
-                    while (currentPlayerUsername.equals(order.get(currentPlayer).getUsername())) { // while it is still the current player's turn
-                        System.out.println("It is currently " + currentPlayerUsername + "'s turn.");
+                    while (map.playersAlive() > 1 && currentPlayerUsername.equals(order.get(currentPlayer).getUsername())) { // while it is still the current player's turn
                         String[] str = new String[3];
                         empty = new byte[256];
                         packet = new DatagramPacket(empty, empty.length);
-                        System.out.println("waiting");
+                        //System.out.println("sending heartbeat");
+                        //checking = true; 
                         socket.receive(packet);
                         try {
                             map.printPlayers();
@@ -190,52 +196,78 @@ public class MulticastServerThread extends Thread {
                                         }
                                         break;
                                     case "attack":
+                                        // initialized
                                         switch (str[2]) {
                                             case "up":
-                                                map.findOpponent(order.get(currentPlayer), 0, 0);
+                                                attackresult = map.findOpponent(order.get(currentPlayer), 0, 0);
+                                                arst = attackresult.split(";");
                                                 pkt = buildPacket("output;" + str[1] + " attacked upward.\n");
                                                 socket.send(pkt);
                                                 break;
                                             case "left":
-                                                map.findOpponent(order.get(currentPlayer), 0, 1);
+                                                attackresult = map.findOpponent(order.get(currentPlayer), 0, 1);
+                                                arst = attackresult.split(";");
                                                 pkt = buildPacket("output;" + str[1] + " attacked to the left.\n");
                                                 socket.send(pkt);
                                                 break;
                                             case "down":
-                                                map.findOpponent(order.get(currentPlayer), 0, 2);
-
+                                                attackresult = map.findOpponent(order.get(currentPlayer), 0, 2);
+                                                arst = attackresult.split(";");
                                                 pkt = buildPacket("output;" + str[1] + " attacked downward.\n");
                                                 socket.send(pkt);
                                                 break;
                                             case "right":
-                                                map.findOpponent(order.get(currentPlayer), 0, 3);
+                                                attackresult = map.findOpponent(order.get(currentPlayer), 0, 3);
+                                                arst = attackresult.split(";");
                                                 pkt = buildPacket("output;" + str[1] + " attacked to right.\n");
                                                 socket.send(pkt);
                                                 break;
+                                        }
+                                        switch (arst[1]) {
+                                            case "hit":
+                                                pkt = buildPacket("output;The attack hit!");
+                                                socket.send(pkt);
+                                                break;
+                                            case "missed":
+                                                pkt = buildPacket("output;The attack missed.");
+                                                socket.send(pkt);
                                         }
                                         break;
                                     case "spell":
                                         switch (str[2]) {
                                             case "up":
-                                                map.findOpponent(order.get(currentPlayer), 1, 0);
+                                                attackresult = map.findOpponent(order.get(currentPlayer), 1, 0);
+                                                arst = attackresult.split(";");
                                                 pkt = buildPacket("output;" + str[1] + " attacked with a spell upward.\n");
                                                 socket.send(pkt);
                                                 break;
                                             case "left":
-                                                map.findOpponent(order.get(currentPlayer), 1, 1);
+                                                attackresult = map.findOpponent(order.get(currentPlayer), 1, 1);
+                                                arst = attackresult.split(";");
                                                 pkt = buildPacket("output;" + str[1] + " attacked with a spell to the left.\n");
                                                 socket.send(pkt);
                                                 break;
                                             case "down":
-                                                map.findOpponent(order.get(currentPlayer), 1, 2);
+                                                attackresult = map.findOpponent(order.get(currentPlayer), 1, 2);
+                                                arst = attackresult.split(";");
                                                 pkt = buildPacket("output;" + str[1] + " attacked with a spell downward.\n");
                                                 socket.send(pkt);
                                                 break;
                                             case "right":
-                                                map.findOpponent(order.get(currentPlayer), 1, 3);
+                                                attackresult = map.findOpponent(order.get(currentPlayer), 1, 3);
+                                                arst = attackresult.split(";");
                                                 pkt = buildPacket("output;" + str[1] + " attacked with a spell to right.\n");
                                                 socket.send(pkt);
                                                 break;
+                                        }
+                                        switch (arst[1]) {
+                                            case "hit":
+                                                pkt = buildPacket("output;The attack hit!");
+                                                socket.send(pkt);
+                                                break;
+                                            case "missed":
+                                                pkt = buildPacket("output;The attack missed.");
+                                                socket.send(pkt);
                                         }
                                         break;
                                     case "potion":
@@ -244,14 +276,21 @@ public class MulticastServerThread extends Thread {
                                     case "wait":
                                         pkt = buildPacket("output;" + str[1] + " waits.\n");
                                         socket.send(pkt);
-                                        if(currentPlayer + 1 >= playersCount) {
+                                        if (currentPlayer + 1 >= playersCount) {
                                             currentPlayer = 0; //cycle back to first player
                                         } else {
-                                            currentPlayer++; // go to next player
+                                            if (map.playersAlive() > 1) {
+                                                currentPlayer++; // go to next player
+                                                pkt = buildPacket("output;" + "It is currently " + currentPlayerUsername + "'s turn.\n");
+                                                socket.send(pkt);
+                                            }
                                         }
                                         break;
                                 }
+                                pkt = buildPacket(map.getAllStats());
+                                socket.send(pkt);
                                 System.out.println(map.getCoords(str[1]));
+                                map.removeDeadPlayers();
                                 map.generateMap();
                                 pkt = buildPacket(map.returnMap());
                                 socket.send(pkt);
@@ -263,12 +302,29 @@ public class MulticastServerThread extends Thread {
                         }
                     }
                 }
+                pkt = buildPacket("output;The winner is " + currentPlayerUsername + "!");
+                socket.send(pkt);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (type == 2) {
-            //heartbeat monitor. determines when a player is considered offline/dead client.
-        }
+            //heartbeat monitor. sends heartbeats.
+            DatagramPacket pkt;
+            while (true) {
+                if (checking) {
+                    try {
+                        Thread.sleep(1000);
+                        pkt = buildPacket("heartbeat;Heartbeat sending");
+                        socket.send(pkt);
+                        checking = false;
+                    } catch (IOException ex) {
+                        Logger.getLogger(MulticastServerThread.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(MulticastServerThread.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        } 
         socket.close();
     }
 

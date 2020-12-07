@@ -180,7 +180,7 @@ public class Character {
         return this.clientAlive;
     }
 
-    public void setCharClass(boolean newStatus) {
+    public void setLiveStatus(boolean newStatus) {
         this.clientAlive = newStatus;
     }
     
