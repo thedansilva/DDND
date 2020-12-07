@@ -175,6 +175,7 @@ public class MulticastServerThread extends Thread {
                             }
                         }
                          */
+                        socket.receive(packet);
                         try {
                             map.printPlayers();
                             String received = new String(packet.getData(), 0, packet.getLength());
