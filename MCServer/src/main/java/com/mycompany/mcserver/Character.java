@@ -25,6 +25,7 @@ public class Character {
     int moverange;
     String username; // the associated username for this character
     char icon; // to be displayed on the map
+    boolean clientAlive;
     String charClass;
 
     public Character(int x, int y, String username, char icon, String charClass) {
@@ -39,14 +40,14 @@ public class Character {
         this.username = username;
         this.icon = icon;
         this.charClass = charClass;
-
+        this.clientAlive = true;
         switch (charClass) {
             case "cleric":
                 this.strength = 11;
                 this.dexterity = 15;
                 this.intelligence = 17;
-                this.health = 35;
-                this.potionCount = 3;
+                this.health = 45;
+                this.potionCount = 4;
                 this.defense = 9;
                 this.resistance = 14;
                 this.atkrange = 1;
@@ -96,6 +97,7 @@ public class Character {
                 this.moverange = 5;
                 break;
         }
+        this.moverange = 999;
     }
 
     public int getStrength() {
@@ -172,5 +174,17 @@ public class Character {
 
     public void setCharClass(String newClass) {
         this.charClass = newClass;
+    }
+    
+    public boolean getLiveStatus() {
+        return this.clientAlive;
+    }
+
+    public void setCharClass(boolean newStatus) {
+        this.clientAlive = newStatus;
+    }
+    
+    public int getMoveRange() {
+        return this.moverange;
     }
 }

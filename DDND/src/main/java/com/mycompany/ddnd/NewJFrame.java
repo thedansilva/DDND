@@ -297,10 +297,10 @@ public class NewJFrame extends javax.swing.JFrame implements Runnable {
                                     System.out.println("Sent start request on behalf of " + username + ".");
                                     break;
                                 case "attack":
-                                    this.sendString("attack;" + username + input[1]); // input[1] is assumed to be the direction
+                                    this.sendString("attack;" + username + ";" + input[1]); // input[1] is assumed to be the direction
                                     break;
                                 case "spell":
-                                    this.sendString("spell;" + username + input[1]); // input[1] is assumed to be the direction
+                                    this.sendString("spell;" + username + ";" + input[1]); // input[1] is assumed to be the direction
                                     break;
                                 case "potion":
                                     this.sendString("potion;" + username + ";null");
