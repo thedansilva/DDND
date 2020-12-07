@@ -3,6 +3,8 @@ package com.mycompany.mcserver;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MulticastServerThread extends Thread {
 
@@ -12,6 +14,7 @@ public class MulticastServerThread extends Thread {
     int type;
     ArrayList<Character> playersArray;
     boolean gameStarted;
+    Boolean checking = false;
 
     public MulticastServerThread(int type) throws IOException {
         super("MulticastServerThread");
@@ -117,9 +120,11 @@ public class MulticastServerThread extends Thread {
 
             // GAME HAS STARTED PAST THIS POINT
             try {
+                new MulticastServerThread(2).start(); // heartbeat server
                 byte[] empty;
                 ArrayList<Character> order = map.getPlayers();
-                Collections.shuffle(order);
+                Collections.shuffle(order); // shuffle the order of players to get a random order of users
+
                 socket.send(buildPacket("output;GAME STARTING\n"));
                 socket.send(buildPacket("output;Order:\n"));
                 for (int z = 0; z < order.size(); z++) {
@@ -130,19 +135,46 @@ public class MulticastServerThread extends Thread {
                 int currentPlayer = 0;
                 int moveRange = 0;
                 int movesLeft = 0;
+                boolean turnOver = false;
                 int checkX, checkY; // used to check if the user's movement actually moved them on the map
                 String currentPlayerUsername = "";
-
+                String attackresult;
+                String[] arst = {"", "", "", ""};
+                String heartbeatResponse[] = {"", "", "", ""}; // used to keep track on who responds to heartbeat requests
                 while (map.playersAlive() > 1) {
                     currentPlayerUsername = order.get(currentPlayer).getUsername();
                     moveRange = order.get(currentPlayer).getMoveRange();
                     movesLeft = order.get(currentPlayer).getMoveRange();
-                    while (currentPlayerUsername.equals(order.get(currentPlayer).getUsername())) { // while it is still the current player's turn
-                        System.out.println("It is currently " + currentPlayerUsername + "'s turn.");
+                    while (map.playersAlive() > 1 && currentPlayerUsername.equals(order.get(currentPlayer).getUsername())) { // while it is still the current player's turn
+                        pkt = buildPacket(map.getAllStats() + "\n" + currentPlayerUsername + "'s turn");
+                        socket.send(pkt);
                         String[] str = new String[3];
                         empty = new byte[256];
                         packet = new DatagramPacket(empty, empty.length);
-                        System.out.println("waiting");
+
+                        /* HEARTBEAT CHECKER
+                        Kill all clients.
+                        Gets a list of all packets sent back to the server after the heartbeat "resurrection" is sent out for about 0.5 seconds 
+                        (another thread is responsible for setting checking to true/false after 0.5 seconds).
+                        Everybody who replies is brought back to life.
+                        If the current player is dead, skip their turn.
+                        Check every turn.
+                         *//*
+                        System.out.println("Sending heartbeat.");
+                        checking = true;
+                        while (checking) {
+                            socket.receive(packet);
+                            String received = new String(packet.getData(), 0, packet.getLength());
+                            heartbeatResponse = received.replaceAll(" ", ";").split(";");
+                            if (str[0].equals("heartbeat")) {
+                                for (int z = 0; z < map.characters.size(); z++) {
+                                    if (str[1].equals(map.characters.get(z).getUsername())) {
+
+                                    }
+                                }
+                            }
+                        }*/
+
                         socket.receive(packet);
                         try {
                             map.printPlayers();
@@ -190,8 +222,7 @@ public class MulticastServerThread extends Thread {
                                         }
                                         break;
                                     case "attack":
-                                        String attackresult;
-                                        String[] arst = new String[4];
+                                        // initialized
                                         switch (str[2]) {
                                             case "up":
                                                 attackresult = map.findOpponent(order.get(currentPlayer), 0, 0);
@@ -217,6 +248,23 @@ public class MulticastServerThread extends Thread {
                                                 pkt = buildPacket("output;" + str[1] + " attacked to right.\n");
                                                 socket.send(pkt);
                                                 break;
+                                        }
+                                        switch (arst[1]) {
+                                            case "hit":
+                                                pkt = buildPacket("output;The attack hit!\n");
+                                                socket.send(pkt);
+                                                break;
+                                            case "missed":
+                                                pkt = buildPacket("output;The attack missed.\n");
+                                                socket.send(pkt);
+                                        }
+                                        if (currentPlayer + 1 >= playersCount) {
+                                            currentPlayer = 0; //cycle back to first player
+                                        } else {
+                                            if (map.playersAlive() > 1) {
+                                                currentPlayer++; // go to next player
+
+                                            }
                                         }
                                         break;
                                     case "spell":
@@ -246,21 +294,57 @@ public class MulticastServerThread extends Thread {
                                                 socket.send(pkt);
                                                 break;
                                         }
-                                        break;
-                                    case "potion":
-                                        // heal user idk
-                                        break;
-                                    case "wait":
-                                        pkt = buildPacket("output;" + str[1] + " waits.\n");
-                                        socket.send(pkt);
-                                        if(currentPlayer + 1 >= playersCount) {
+                                        switch (arst[1]) {
+                                            case "hit":
+                                                pkt = buildPacket("output;The attack hit!\n");
+                                                socket.send(pkt);
+                                                break;
+                                            case "missed":
+                                                pkt = buildPacket("output;The attack missed.\n");
+                                                socket.send(pkt);
+                                        }
+                                        if (currentPlayer + 1 >= playersCount) {
                                             currentPlayer = 0; //cycle back to first player
                                         } else {
-                                            currentPlayer++; // go to next player
+                                            if (map.playersAlive() > 1) {
+                                                currentPlayer++; // go to next player
+
+                                            }
+                                        }
+                                        break;
+                                    case "potion":
+<<<<<<< Updated upstream
+=======
+                                        String potresult = map.usePotion(order.get(currentPlayer));
+                                        pkt = buildPacket("output;"+potresult);
+                                        socket.send(pkt);
+>>>>>>> Stashed changes
+                                        // heal user idk
+                                        if (currentPlayer + 1 >= playersCount) {
+                                            currentPlayer = 0; //cycle back to first player
+                                        } else {
+                                            if (map.playersAlive() > 1) {
+                                                currentPlayer++; // go to next player
+
+                                            }
+                                        }
+                                        break;
+                                    case "wait":
+
+                                        pkt = buildPacket("output;" + str[1] + " waits.\n");
+                                        socket.send(pkt);
+                                        if (currentPlayer + 1 >= playersCount) {
+                                            currentPlayer = 0; //cycle back to first player
+                                        } else {
+                                            if (map.playersAlive() > 1) {
+                                                currentPlayer++; // go to next player
+
+                                            }
                                         }
                                         break;
                                 }
                                 System.out.println(map.getCoords(str[1]));
+                                map.removeDeadPlayers();
                                 map.generateMap();
                                 pkt = buildPacket(map.returnMap());
                                 socket.send(pkt);
@@ -272,11 +356,31 @@ public class MulticastServerThread extends Thread {
                         }
                     }
                 }
+                pkt = buildPacket("output;The winner is " + currentPlayerUsername + "!");
+                socket.send(pkt);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if (type == 2) {
-            //heartbeat monitor. determines when a player is considered offline/dead client.
+            //heartbeat monitor. sends heartbeats.
+            DatagramPacket pkt;
+            while (true) {
+                if (checking) {
+                    try {
+                        for (int z = 0; z < map.characters.size(); z++) {
+                            map.characters.get(z).setLiveStatus(false); // set all clients to 'dead'.
+                        }
+                        pkt = buildPacket("heartbeat;Heartbeat sending");
+                        socket.send(pkt);
+                        Thread.sleep(500);
+                        checking = false;
+                    } catch (IOException ex) {
+                        Logger.getLogger(MulticastServerThread.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(MulticastServerThread.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
         }
         socket.close();
     }

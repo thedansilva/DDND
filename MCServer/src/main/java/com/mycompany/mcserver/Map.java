@@ -95,6 +95,14 @@ public class Map {
         }
     }
 
+    public void removeDeadPlayers() {
+        for (int z = 0; z < characters.size(); z++) {
+            if (characters.get(z).getHealth() < 1) {
+                characters.remove(characters.get(z));
+            }
+        }
+    }
+
     public int playersAlive() {
         int alive = 0;
         for (int z = 0; z < characters.size(); z++) {
@@ -364,34 +372,44 @@ public class Map {
         }
         return "";
     }
-    
+
     public String attack(Character attacker, Character target, int dmgType) {
         //implement damage calculation, start by rolling to see if attack hits
         if (dmgType == 0) { //physical attack calculations
-            int hit = (int)(Math.random() * 20 + 1);
+            int hit = (int) (Math.random() * 20 + 1);
             if (hit >= (20 - attacker.getDexterity())) { //check if attack hits, then calc hp change, return string to server
                 int damage = attacker.getStrength() - target.getDefense();
                 if (damage > 0) { //check to make sure damage isnt smaller than defense 
                     target.setHealth(target.getHealth() - damage);
-                    return attacker.getUsername()+";hit;"+target.getUsername()+";damage-"+damage;
+                    return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-" + damage;
                 } else {
                     target.setHealth(target.getHealth() - 1);
-                    return attacker.getUsername()+";hit;"+target.getUsername()+";damage-1";
+                    return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-1";
                 }
             } else {
-                System.out.println("Attack missed. roll - "+hit);
-                return attacker.getUsername()+";missed;"+target.getUsername()+";roll-"+hit;
+                System.out.println("Attack missed. roll - " + hit);
+                return attacker.getUsername() + ";missed;" + target.getUsername() + ";roll-" + hit;
             }
         } else { //spell attack calculations
             int damage = attacker.getIntelligence() - target.getResistance();
             if (damage > 0) { //check to make sure damage isnt smaller than defense 
                 target.setHealth(target.getHealth() - damage);
-                return attacker.getUsername()+";hit;"+target.getUsername()+";damage-"+damage;
+                return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-" + damage;
             } else {
                 target.setHealth(target.getHealth() - 1);
-                return attacker.getUsername()+";hit;"+target.getUsername()+";damage-1";
+                return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-1";
             }
         }
     }
     
+    public String usePotion(Character user) {
+        if (user.getPotionCount() > 0) { //check if potions are available to user
+            user.setHealth(user.getHealth() + 10);
+            user.setPotionCount(user.getPotionCount()-1);
+            return user.getUsername()+" used a potion and healed for 10 health.";
+        } else {
+            return user.getUsername()+" has no potions to use.";
+        }   
+    }
+
 }
