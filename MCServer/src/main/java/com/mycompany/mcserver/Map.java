@@ -381,10 +381,20 @@ public class Map {
                 int damage = attacker.getStrength() - target.getDefense();
                 if (damage > 0) { //check to make sure damage isnt smaller than defense 
                     target.setHealth(target.getHealth() - damage);
-                    return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-" + damage;
+                    char oldIcon = target.getIcon(); //animations сука
+                    target.setIcon('/');
+                    generateMap();
+                    String aniMap = returnMap();
+                    target.setIcon(oldIcon);
+                    return attacker.getUsername() + ";hit;" + aniMap;
                 } else {
                     target.setHealth(target.getHealth() - 1);
-                    return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-1";
+                    char oldIcon = target.getIcon(); //animations сука
+                    target.setIcon('/');
+                    generateMap();
+                    String aniMap = returnMap();
+                    target.setIcon(oldIcon);
+                    return attacker.getUsername() + ";hit;" + aniMap;
                 }
             } else {
                 System.out.println("Attack missed. roll - " + hit);
@@ -394,21 +404,32 @@ public class Map {
             int damage = attacker.getIntelligence() - target.getResistance();
             if (damage > 0) { //check to make sure damage isnt smaller than defense 
                 target.setHealth(target.getHealth() - damage);
-                return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-" + damage;
+                char oldIcon = target.getIcon(); //animations сука
+                target.setIcon('!');
+                generateMap();
+                String aniMap = returnMap();
+                target.setIcon(oldIcon);
+                return attacker.getUsername() + ";hit;" + aniMap;
             } else {
                 target.setHealth(target.getHealth() - 1);
-                return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-1";
+                char oldIcon = target.getIcon(); //animations сука
+                target.setIcon('!');
+                generateMap();
+                String aniMap = returnMap();
+                target.setIcon(oldIcon);
+                return attacker.getUsername() + ";hit;" + aniMap;
             }
         }
     }
-
+    
     public String usePotion(Character user) {
         if (user.getPotionCount() > 0) { //check if potions are available to user
             user.setHealth(user.getHealth() + 10);
-            user.setPotionCount(user.getPotionCount() - 1);
-            return user.getUsername() + " used a potion and healed for 10 health.";
+            user.setPotionCount(user.getPotionCount()-1);
+            return user.getUsername()+" used a potion and healed for 10 health.";
         } else {
-            return user.getUsername() + " has no potions to use.";
-        }
+            return user.getUsername()+" has no potions to use.";
+        }   
     }
+
 }
