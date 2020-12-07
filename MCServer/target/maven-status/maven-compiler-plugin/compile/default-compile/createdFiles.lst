@@ -2,3 +2,4 @@ com\mycompany\mcserver\Output.class
 com\mycompany\mcserver\MulticastServer.class
 com\mycompany\mcserver\MulticastServerThread.class
 com\mycompany\mcserver\Map.class
+com\mycompany\mcserver\Character.class

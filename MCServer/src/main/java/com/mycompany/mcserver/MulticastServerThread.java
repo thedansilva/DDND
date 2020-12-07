@@ -313,12 +313,9 @@ public class MulticastServerThread extends Thread {
                                         }
                                         break;
                                     case "potion":
-<<<<<<< Updated upstream
-=======
                                         String potresult = map.usePotion(order.get(currentPlayer));
-                                        pkt = buildPacket("output;"+potresult);
+                                        pkt = buildPacket("output;"+potresult+"\n");
                                         socket.send(pkt);
->>>>>>> Stashed changes
                                         // heal user idk
                                         if (currentPlayer + 1 >= playersCount) {
                                             currentPlayer = 0; //cycle back to first player
