@@ -14,8 +14,8 @@ public class MulticastServerThread extends Thread {
     int type;
     ArrayList<Character> playersArray;
     boolean gameStarted;
-    Boolean checking = true;
-    
+    Boolean checking = false;
+
     public MulticastServerThread(int type) throws IOException {
         super("MulticastServerThread");
         this.type = type;
@@ -123,14 +123,14 @@ public class MulticastServerThread extends Thread {
                 new MulticastServerThread(2).start(); // heartbeat server
                 byte[] empty;
                 ArrayList<Character> order = map.getPlayers();
-                Collections.shuffle(order);
+                Collections.shuffle(order); // shuffle the order of players to get a random order of users
+
                 socket.send(buildPacket("output;GAME STARTING\n"));
                 socket.send(buildPacket("output;Order:\n"));
                 for (int z = 0; z < order.size(); z++) {
                     socket.send(buildPacket("output;" + order.get(z).getUsername() + "\n")); // send order list to users
                 }
-                pkt = buildPacket("output;" + "It is currently " + order.get(0).getUsername() + "'s turn.\n");
-                socket.send(pkt);
+
                 int playersCount = order.size();
                 int currentPlayer = 0;
                 int moveRange = 0;
@@ -139,17 +139,42 @@ public class MulticastServerThread extends Thread {
                 String currentPlayerUsername = "";
                 String attackresult;
                 String[] arst = {"", "", "", ""};
+                String heartbeatResponse[] = {"", "", "", ""}; // used to keep track on who responds to heartbeat requests
                 while (map.playersAlive() > 1) {
                     currentPlayerUsername = order.get(currentPlayer).getUsername();
                     moveRange = order.get(currentPlayer).getMoveRange();
                     movesLeft = order.get(currentPlayer).getMoveRange();
                     while (map.playersAlive() > 1 && currentPlayerUsername.equals(order.get(currentPlayer).getUsername())) { // while it is still the current player's turn
+                        pkt = buildPacket("output;" + currentPlayerUsername + "'s turn:");
+                        socket.send(pkt);
                         String[] str = new String[3];
                         empty = new byte[256];
                         packet = new DatagramPacket(empty, empty.length);
-                        //System.out.println("sending heartbeat");
-                        //checking = true; 
-                        socket.receive(packet);
+
+                        /* HEARTBEAT CHECKER
+                        Kill all clients.
+                        Gets a list of all packets sent back to the server after the heartbeat "resurrection" is sent out for about 0.5 seconds 
+                        (another thread is responsible for setting checking to true/false after 0.5 seconds).
+                        Everybody who replies is brought back to life.
+                        If the current player is dead, skip their turn.
+                        Check every turn.
+                         */
+                        /*
+                        System.out.println("Sending heartbeat.");
+                        checking = true;
+                        while (checking) {
+                            socket.receive(packet);
+                            String received = new String(packet.getData(), 0, packet.getLength());
+                            heartbeatResponse = received.replaceAll(" ", ";").split(";");
+                            if (str[0].equals("heartbeat")) {
+                                for (int z = 0; z < map.characters.size(); z++) {
+                                    if (str[1].equals(map.characters.get(z).getUsername())) {
+
+                                    }
+                                }
+                            }
+                        }
+                         */
                         try {
                             map.printPlayers();
                             String received = new String(packet.getData(), 0, packet.getLength());
@@ -281,8 +306,6 @@ public class MulticastServerThread extends Thread {
                                         } else {
                                             if (map.playersAlive() > 1) {
                                                 currentPlayer++; // go to next player
-                                                pkt = buildPacket("output;" + "It is currently " + currentPlayerUsername + "'s turn.\n");
-                                                socket.send(pkt);
                                             }
                                         }
                                         break;
@@ -313,9 +336,12 @@ public class MulticastServerThread extends Thread {
             while (true) {
                 if (checking) {
                     try {
-                        Thread.sleep(1000);
+                        for (int z = 0; z < map.characters.size(); z++) {
+                            map.characters.get(z).setLiveStatus(false); // set all clients to 'dead'.
+                        }
                         pkt = buildPacket("heartbeat;Heartbeat sending");
                         socket.send(pkt);
+                        Thread.sleep(500);
                         checking = false;
                     } catch (IOException ex) {
                         Logger.getLogger(MulticastServerThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -324,7 +350,7 @@ public class MulticastServerThread extends Thread {
                     }
                 }
             }
-        } 
+        }
         socket.close();
     }
 
