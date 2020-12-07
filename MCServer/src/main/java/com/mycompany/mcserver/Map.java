@@ -402,4 +402,13 @@ public class Map {
         }
     }
 
+    public String usePotion(Character user) {
+        if (user.getPotionCount() > 0) { //check if potions are available to user
+            user.setHealth(user.getHealth() + 10);
+            user.setPotionCount(user.getPotionCount() - 1);
+            return user.getUsername() + " used a potion and healed for 10 health.";
+        } else {
+            return user.getUsername() + " has no potions to use.";
+        }
+    }
 }
