@@ -253,6 +253,11 @@ public class MulticastServerThread extends Thread {
                                             case "hit":
                                                 pkt = buildPacket("output;The attack hit!\n");
                                                 socket.send(pkt);
+                                                pkt = buildPacket(arst[2]+";"+arst[3]);
+                                                socket.send(pkt);
+                                                try {
+                                                    Thread.sleep(250);
+                                                } catch (Exception e) {}
                                                 break;
                                             case "missed":
                                                 pkt = buildPacket("output;The attack missed.\n");
@@ -298,6 +303,11 @@ public class MulticastServerThread extends Thread {
                                             case "hit":
                                                 pkt = buildPacket("output;The attack hit!\n");
                                                 socket.send(pkt);
+                                                pkt = buildPacket(arst[2]+";"+arst[3]);
+                                                socket.send(pkt);
+                                                try {
+                                                    Thread.sleep(250);
+                                                } catch (Exception e) {}
                                                 break;
                                             case "missed":
                                                 pkt = buildPacket("output;The attack missed.\n");

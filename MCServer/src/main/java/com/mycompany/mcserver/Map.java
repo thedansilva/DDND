@@ -381,10 +381,20 @@ public class Map {
                 int damage = attacker.getStrength() - target.getDefense();
                 if (damage > 0) { //check to make sure damage isnt smaller than defense 
                     target.setHealth(target.getHealth() - damage);
-                    return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-" + damage;
+                    char oldIcon = target.getIcon(); //animations сука
+                    target.setIcon('/');
+                    generateMap();
+                    String aniMap = returnMap();
+                    target.setIcon(oldIcon);
+                    return attacker.getUsername() + ";hit;" + aniMap;
                 } else {
                     target.setHealth(target.getHealth() - 1);
-                    return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-1";
+                    char oldIcon = target.getIcon(); //animations сука
+                    target.setIcon('/');
+                    generateMap();
+                    String aniMap = returnMap();
+                    target.setIcon(oldIcon);
+                    return attacker.getUsername() + ";hit;" + aniMap;
                 }
             } else {
                 System.out.println("Attack missed. roll - " + hit);
@@ -394,10 +404,20 @@ public class Map {
             int damage = attacker.getIntelligence() - target.getResistance();
             if (damage > 0) { //check to make sure damage isnt smaller than defense 
                 target.setHealth(target.getHealth() - damage);
-                return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-" + damage;
+                char oldIcon = target.getIcon(); //animations сука
+                target.setIcon('!');
+                generateMap();
+                String aniMap = returnMap();
+                target.setIcon(oldIcon);
+                return attacker.getUsername() + ";hit;" + aniMap;
             } else {
                 target.setHealth(target.getHealth() - 1);
-                return attacker.getUsername() + ";hit;" + target.getUsername() + ";damage-1";
+                char oldIcon = target.getIcon(); //animations сука
+                target.setIcon('!');
+                generateMap();
+                String aniMap = returnMap();
+                target.setIcon(oldIcon);
+                return attacker.getUsername() + ";hit;" + aniMap;
             }
         }
     }
