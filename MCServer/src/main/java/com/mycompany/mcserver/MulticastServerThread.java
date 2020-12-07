@@ -146,9 +146,7 @@ public class MulticastServerThread extends Thread {
                     moveRange = order.get(currentPlayer).getMoveRange();
                     movesLeft = order.get(currentPlayer).getMoveRange();
                     while (map.playersAlive() > 1 && currentPlayerUsername.equals(order.get(currentPlayer).getUsername())) { // while it is still the current player's turn
-                        pkt = buildPacket(map.getAllStats());
-                        socket.send(pkt);
-                        pkt = buildPacket("output;" + currentPlayerUsername + "'s turn:");
+                        pkt = buildPacket(map.getAllStats() + "\n" + currentPlayerUsername + "'s turn");
                         socket.send(pkt);
                         String[] str = new String[3];
                         empty = new byte[256];
