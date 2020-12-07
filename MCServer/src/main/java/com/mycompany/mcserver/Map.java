@@ -255,223 +255,97 @@ public class Map {
         int atkrange = char1.atkrange;
         boolean playerFound = false;
         boolean collisionFound = false;
+        int range = (dmgType == 1) ? splrange : atkrange;
+        // if the damage type is 1, use spell range. otherwise, use attack range.
+
         try {
             switch (position) {
                 case 0: // up
-                    switch (dmgType) {
-                        case 0: // atk
-                            for (int i = 1; i == atkrange; i++) { // minimum attack range is 1; to have 0 implies you have NO attack
-                                if (!playerFound && !collisionFound) {
-                                    for (int z = 0; z < characters.size(); z++) {
-                                        if (characters.get(z).getX() == char1.getX() - i && characters.get(z).getY() == char1.getY() && playerFound == false) {
-                                            playerFound = true;
-                                            System.out.println("Found player " + characters.get(z).getUsername() + " " + i + " dots above the user.");
-                                        } else {
-                                            System.out.println("Nobody found at position " + (char1.getX() - i) + "  . " + (char1.getY()));
-                                        }
-                                    }
-                                }
-                                if (!collisionFound && !playerFound) {
-                                    if (!(mapLayout[char1.getX() - i][char1.getY()].equals("."))) {
-                                        collisionFound = true;
-                                        System.out.println("Found collision above the user at coordinates " + (char1.getX() - i) + " . " + char1.getY());
-                                    } else {
-                                        System.out.println("Nothing found at position " + (char1.getX() - i) + "  . " + (char1.getY()));
-                                    }
+                    for (int i = 1; i <= range; i++) { // minimum attack range is 1; to have 0 implies you have NO attack
+                        if (!playerFound && !collisionFound) {
+                            for (int z = 0; z < characters.size(); z++) {
+                                if (characters.get(z).getX() == char1.getX() - i && characters.get(z).getY() == char1.getY() && playerFound == false) {
+                                    playerFound = true;
+                                    System.out.println("Found player " + characters.get(z).getUsername() + " " + i + " dots near the user.");
+                                } else {
                                 }
                             }
-                            if (!playerFound) {
-                                System.out.println("Nobody found at all");
+                        }
+                        if (!collisionFound && !playerFound) {
+                            if (!(mapLayout[char1.getX() - i][char1.getY()].equals("."))) {
+                                collisionFound = true;
+                                System.out.println("Found collision above the user at coordinates " + (char1.getX() - i) + " . " + char1.getY());
+                            } else {
                             }
-                            break;
-                        case 1: // spl
-                            for (int i = 1; i == splrange; i++) { // minimum attack range is 1; to have 0 implies you have NO attack
-                                if (!collisionFound && !playerFound) {
-                                    if (!(mapLayout[char1.getX() - i][char1.getY()].equals("."))) {
-                                        collisionFound = true;
-                                        System.out.println("Found collision above the user at coordinates " + (char1.getX() - i) + " . " + char1.getY());
-                                    } else {
-                                        System.out.println("Nothing found at position " + (char1.getX() - i) + "  . " + (char1.getY()));
-                                    }
-                                }
-                                if (!playerFound && !collisionFound) {
-                                    for (int z = 0; z < characters.size(); z++) {
-                                        if (characters.get(z).getX() == char1.getX() - i && characters.get(z).getY() == char1.getY() && playerFound == false) {
-                                            playerFound = true;
-                                            System.out.println("Found player " + characters.get(z).getUsername() + " " + i + " dots below the user.");
-                                        } else {
-                                            System.out.println("Nobody found at position " + (char1.getX() - i) + "  . " + (char1.getY()));
-                                        }
-                                    }
-                                }
-                            }
-                            if (!playerFound) {
-                                System.out.println("Nobody found at all");
-                            }
-                            break;
+                        }
                     }
                     break;
                 case 1: // left
-                    switch (dmgType) {
-                        case 0:
-                            for (int i = 1; i == atkrange; i++) { // minimum attack range is 1; to have 0 implies you have NO attack
-                                if (!collisionFound && !playerFound) {
-                                    if (!(mapLayout[char1.getX()][char1.getY() - i].equals("."))) {
-                                        collisionFound = true;
-                                        System.out.println("Found collision to the left of the user at coordinates " + (char1.getX()) + " . " + (char1.getY() - i));
-                                    } else {
-                                        System.out.println("Nothing found at position " + (char1.getX()) + "  . " + (char1.getY() - i));
-                                    }
-                                }
-                                if (!playerFound && !collisionFound) {
-                                    for (int z = 0; z < characters.size(); z++) {
-                                        if (characters.get(z).getX() == char1.getX() && characters.get(z).getY() == char1.getY() - i && playerFound == false) {
-                                            playerFound = true;
-                                            System.out.println("Found player " + characters.get(z).getUsername() + " " + i + " dots above the user.");
-                                        } else {
-                                            System.out.println("Nobody found at position " + (char1.getX()) + "  . " + (char1.getY() - i));
-                                        }
-                                    }
+                    for (int i = 1; i <= range; i++) { // minimum attack range is 1; to have 0 implies you have NO attack
+                        if (!collisionFound && !playerFound) {
+                            if (!(mapLayout[char1.getX()][char1.getY() - i].equals("."))) {
+                                collisionFound = true;
+                                System.out.println("Found collision to the left of the user at coordinates " + (char1.getX()) + " . " + (char1.getY() - i));
+                            } else {
+                            }
+                        }
+                        if (!playerFound && !collisionFound) {
+                            for (int z = 0; z < characters.size(); z++) {
+                                if (characters.get(z).getX() == char1.getX() && characters.get(z).getY() == char1.getY() - i && playerFound == false) {
+                                    playerFound = true;
+                                    System.out.println("Found player " + characters.get(z).getUsername() + " " + i + " dots near the user.");
+                                } else {
                                 }
                             }
-                            if (!playerFound) {
-                                System.out.println("Nobody found at all");
-                            }
-                            break;
-                        case 1:
-                            for (int i = 1; i == splrange; i++) { // minimum attack range is 1; to have 0 implies you have NO attack
-                                if (!collisionFound && !playerFound) {
-                                    if (!(mapLayout[char1.getX()][char1.getY() - i].equals("."))) {
-                                        collisionFound = true;
-                                        System.out.println("Found collision to the left of the user at coordinates " + (char1.getX()) + " . " + (char1.getY() - i));
-                                    } else {
-                                        System.out.println("Nothing found at position " + (char1.getX()) + "  . " + (char1.getY() - i));
-                                    }
-                                }
-                                if (!playerFound && !collisionFound) {
-                                    for (int z = 0; z < characters.size(); z++) {
-                                        if (characters.get(z).getX() == char1.getX() && characters.get(z).getY() == char1.getY() - i && playerFound == false) {
-                                            playerFound = true;
-                                            System.out.println("Found player " + characters.get(z).getUsername() + " " + i + " dots above the user.");
-                                        } else {
-                                            System.out.println("Nobody found at position " + (char1.getX()) + "  . " + (char1.getY() - i));
-                                        }
-                                    }
-                                }
-                            }
-                            if (!playerFound) {
-                                System.out.println("Nobody found at all");
-                            }
-                            break;
+                        }
                     }
                     break;
                 case 2: // down
-                    switch (dmgType) {
-                        case 0:
-                            for (int i = 1; i == atkrange; i++) { // minimum attack range is 1; to have 0 implies you have NO attack
-                                if (!collisionFound && !playerFound) {
-                                    if (!(mapLayout[char1.getX() + i][char1.getY()].equals("."))) {
-                                        collisionFound = true;
-                                        System.out.println("Found collision above the user at coordinates " + (char1.getX() + i) + " . " + char1.getY());
-                                    } else {
-                                        System.out.println("Nothing found at position " + (char1.getX() + i) + "  . " + (char1.getY()));
-                                    }
-                                }
-                                if (!playerFound && !collisionFound) {
-                                    for (int z = 0; z < characters.size(); z++) {
-                                        if (characters.get(z).getX() == char1.getX() + i && characters.get(z).getY() == char1.getY() && playerFound == false) {
-                                            playerFound = true;
-                                            System.out.println("Found player " + characters.get(z).getUsername() + " " + z + " dots above the user.");
-                                        } else {
-                                            System.out.println("Nobody found at position " + (char1.getX() + i) + "  . " + (char1.getY()));
-                                        }
-                                    }
+                    for (int i = 1; i <= range; i++) { // minimum attack range is 1; to have 0 implies you have NO attack
+                        if (!collisionFound && !playerFound) {
+                            if (!(mapLayout[char1.getX() + i][char1.getY()].equals("."))) {
+                                collisionFound = true;
+                                System.out.println("Found collision above the user at coordinates " + (char1.getX() + i) + " . " + char1.getY());
+                            } else {
+                            }
+                        }
+                        if (!playerFound && !collisionFound) {
+                            for (int z = 0; z < characters.size(); z++) {
+                                if (characters.get(z).getX() == char1.getX() + i && characters.get(z).getY() == char1.getY() && playerFound == false) {
+                                    playerFound = true;
+                                    System.out.println("Found player " + characters.get(z).getUsername() + " " + z + " dots near the user.");
+                                } else {
                                 }
                             }
-                            if (!playerFound) {
-                                System.out.println("Nobody found at all");
-                            }
-                            break;
-                        case 1:
-                            for (int i = 1; i == splrange; i++) { // minimum attack range is 1; to have 0 implies you have NO attack
-                                if (!collisionFound && !playerFound) {
-                                    if (!(mapLayout[char1.getX() + i][char1.getY()].equals("."))) {
-                                        collisionFound = true;
-                                        System.out.println("Found collision above the user at coordinates " + (char1.getX() + i) + " . " + char1.getY());
-                                    } else {
-                                        System.out.println("Nothing found at position " + (char1.getX() + i) + "  . " + (char1.getY()));
-                                    }
-                                }
-                                if (!playerFound && !collisionFound) {
-                                    for (int z = 0; z < characters.size(); z++) {
-                                        if (characters.get(z).getX() == char1.getX() + i && characters.get(z).getY() == char1.getY() && playerFound == false) {
-                                            playerFound = true;
-                                            System.out.println("Found player " + characters.get(z).getUsername() + " " + z + " dots above the user.");
-                                        } else {
-                                            System.out.println("Nobody found at position " + (char1.getX() + i) + "  . " + (char1.getY()));
-                                        }
-                                    }
-                                }
-                            }
-                            if (!playerFound) {
-                                System.out.println("Nobody found at all");
-                            }
-                            break;
-                    }
-                case 3: // right
-                    switch (dmgType) {
-                        case 0:
-                            for (int i = 1; i == atkrange; i++) { // minimum attack range is 1; to have 0 implies you have NO attack
-                                if (!collisionFound && !playerFound) {
-                                    if (!(mapLayout[char1.getX()][char1.getY() + i].equals("."))) {
-                                        collisionFound = true;
-                                        System.out.println("Found collision to the left of the user at coordinates " + (char1.getX()) + " . " + (char1.getY() + i));
-                                    } else {
-                                        System.out.println("Nothing found at position " + (char1.getX()) + "  . " + (char1.getY() + i));
-                                    }
-                                }
-                                if (!playerFound && !collisionFound) {
-                                    for (int z = 0; z < characters.size(); z++) {
-                                        if (characters.get(z).getX() == char1.getX() && characters.get(z).getY() == char1.getY() + i && playerFound == false) {
-                                            playerFound = true;
-                                            System.out.println("Found player " + characters.get(z).getUsername() + " " + i + " dots above the user.");
-                                        } else {
-                                            System.out.println("Nobody found at position " + (char1.getX()) + "  . " + (char1.getY() + i));
-                                        }
-                                    }
-                                }
-                            }
-                            if (!playerFound) {
-                                System.out.println("Nobody found at all");
-                            }
-                            break;
-                        case 1:
-                            for (int i = 1; i == splrange; i++) { // minimum attack range is 1; to have 0 implies you have NO attack
-                                if (!collisionFound && !playerFound) {
-                                    if (!(mapLayout[char1.getX()][char1.getY() + i].equals("."))) {
-                                        collisionFound = true;
-                                        System.out.println("Found collision to the left of the user at coordinates " + (char1.getX()) + " . " + (char1.getY() + i));
-                                    } else {
-                                        System.out.println("Nothing found at position " + (char1.getX()) + "  . " + (char1.getY() - i));
-                                    }
-                                }
-                                if (!playerFound && !collisionFound) {
-                                    for (int z = 0; z < characters.size(); z++) {
-                                        if (characters.get(z).getX() == char1.getX() && characters.get(z).getY() == char1.getY() + i && playerFound == false) {
-                                            playerFound = true;
-                                            System.out.println("Found player " + characters.get(z).getUsername() + " " + i + " dots above the user.");
-                                        } else {
-                                            System.out.println("Nobody found at position " + (char1.getX()) + "  . " + (char1.getY() + i));
-                                        }
-                                    }
-                                }
-                            }
-                            if (!playerFound) {
-                                System.out.println("Nobody found at all");
-                            }
-                            break;
+                        }
                     }
                     break;
+                case 3: // right
+                    for (int i = 1; i <= range; i++) { // minimum attack range is 1; to have 0 implies you have NO attack
+                        if (!collisionFound && !playerFound) {
+                            if (!(mapLayout[char1.getX()][char1.getY() + i].equals("."))) {
+                                collisionFound = true;
+                                System.out.println("Found collision to the left of the user at coordinates " + (char1.getX()) + " . " + (char1.getY() + i));
+                            } else {
+                            }
+                        }
+                        if (!playerFound && !collisionFound) {
+                            for (int z = 0; z < characters.size(); z++) {
+                                if (characters.get(z).getX() == char1.getX() && characters.get(z).getY() == char1.getY() + i && playerFound == false) {
+                                    playerFound = true;
+                                    System.out.println("Found player " + characters.get(z).getUsername() + " " + i + " dots near the user.");
+                                } else {
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+            if (!playerFound) {
+                System.out.println("Nobody found at all");
+            }
+            if (!collisionFound) {
+                System.out.println("No collisions.");
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("User attack travelling into area out of bounds.");
