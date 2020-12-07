@@ -97,7 +97,7 @@ public class Character {
                 this.moverange = 5;
                 break;
         }
-        this.moverange = 999;
+        //this.moverange = 999;
     }
 
     public int getStrength() {
