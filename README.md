@@ -43,7 +43,7 @@ Attacks are performed by typing 'attack [direction]' in the command box.
 
 Spells are performed by typing 'spell [direction]' in the command box.
 
-The user can use a potion to heal 10 hp by typing 'potion' in the command box. 
+The user can use a potion to heal 10 HP by typing 'potion' in the command box. 
 
 The user can end their turn by typing 'wait' in the command box. 
 
