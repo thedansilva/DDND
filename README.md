@@ -35,17 +35,31 @@ to start a client. Multiple clients can be started this way (max of 5, but this 
 
 Follow the instruction on the client's frame and enter a name + class into the input box (bottom-right).  
 
+https://imgur.com/9UWgdpd
+
 After the desired number of clients have join the game, type 'start' in the command box on one of the clients. 
+
+https://imgur.com/FLqPvbw
 
 Character movement is done by selecting the map display (left) and using the arrows keys. 
 
+https://imgur.com/d3MU8Yc
+
 Attacks are performed by typing 'attack [direction]' in the command box. 
+
+https://imgur.com/xSiIvxe
 
 Spells are performed by typing 'spell [direction]' in the command box.
 
+https://imgur.com/5dpkTvk
+
 The user can use a potion to heal 10 HP by typing 'potion' in the command box. 
 
+https://imgur.com/4RKmYAP
+
 The user can end their turn by typing 'wait' in the command box. 
+
+https://imgur.com/bf7CdHW
 
 The last remaining character alive wins.  
 Good luck.
