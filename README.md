@@ -39,27 +39,27 @@ Follow the instruction on the client's frame and enter a name + class into the i
 
 After the desired number of clients have join the game, type 'start' in the command box on one of the clients. 
 
-https://imgur.com/FLqPvbw
+![](https://i.imgur.com/FLqPvbw.png)
 
 Character movement is done by selecting the map display (left) and using the arrows keys. 
 
-https://imgur.com/d3MU8Yc
+![](https://i.imgur.com/d3MU8Yc.png)
 
 Attacks are performed by typing 'attack [direction]' in the command box. 
 
-https://imgur.com/xSiIvxe
+![](https://i.imgur.com/xSiIvxe.png)
 
 Spells are performed by typing 'spell [direction]' in the command box.
 
-https://imgur.com/5dpkTvk
+![](https://i.imgur.com/5dpkTvk.png)
 
 The user can use a potion to heal 10 HP by typing 'potion' in the command box. 
 
-https://imgur.com/4RKmYAP
+![](https://i.imgur.com/4RKmYAP.png)
 
 The user can end their turn by typing 'wait' in the command box. 
 
-https://imgur.com/bf7CdHW
+![](https://i.imgur.com/bf7CdHW.png)
 
 The last remaining character alive wins.  
 Good luck.
