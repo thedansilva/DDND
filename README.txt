@@ -21,6 +21,7 @@ Select the NewJFrame.java tab in the editor view and press the green play/run bu
 to start a client. Multiple clients can be started this way (max of 5).
 
 Follow the instruction on the clients and enter a name + class into the input box (bottom-right).
+After the desired number of clients have join the game, type 'start' in the command box on one of the clients. 
 Character movement is done by selecting the map display (left) and using the arrows keys. 
 Attacks are performed by typing 'attack [direction]' in the command box. 
 Spells are performed by typing 'spell [direction]' in the command box.
