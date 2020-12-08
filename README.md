@@ -35,7 +35,7 @@ to start a client. Multiple clients can be started this way (max of 5, but this 
 
 Follow the instruction on the client's frame and enter a name + class into the input box (bottom-right).  
 
-https://imgur.com/9UWgdpd
+![](https://i.imgur.com/9UWgdpd.png)
 
 After the desired number of clients have join the game, type 'start' in the command box on one of the clients. 
 
